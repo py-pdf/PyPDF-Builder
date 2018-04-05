@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="geometry">600x600</property>
+    <property name="resizable">none</property>
+    <child>
+      <object class="ttk.Frame" id="MainApplication">
+        <property name="height">600</property>
+        <property name="width">600</property>
+        <bind add="" handler="callback" sequence="&lt;1&gt;" />
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+        <child>
+          <object class="ttk.Notebook" id="AppNotebook">
+            <property name="height">560</property>
+            <property name="width">600</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="ttk.Notebook.Tab" id="TabJoin">
+                <property name="text" translatable="yes">Join Files</property>
+                <child>
+                  <object class="ttk.Frame" id="JoinFrame">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Label" id="SourceDocsLabel">
+                        <property name="font">TkHeadingFont</property>
+                        <property name="padding">0 10 0 5</property>
+                        <property name="text" translatable="yes">Source Documents</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="columnspan">5</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Treeview" id="JoinFilesList">
+                        <property name="height">8</property>
+                        <property name="selectmode">extended</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="columnspan">5</property>
+                          <property name="propagate">True</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="CurrentFileInfoLabel">
+                        <property name="padding">0 10</property>
+                        <property name="text" translatable="yes">Label_2</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="columnspan">3</property>
+                          <property name="propagate">True</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="JoinPagesFieldLabel">
+                        <property name="justify">right</property>
+                        <property name="text" translatable="yes">Pages</property>
+                        <property name="underline">3</property>
+                        <layout>
+                          <property name="column">3</property>
+                          <property name="ipadx">2</property>
+                          <property name="propagate">True</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Entry" id="JoinPagesField">
+                        <property name="justify">left</property>
+                        <layout>
+                          <property name="column">4</property>
+                          <property name="propagate">True</property>
+                          <property name="row">2</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="JoinAddButton">
+                        <property name="text" translatable="yes">Add...</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="JoinSortButton">
+                        <property name="text" translatable="yes">Sort</property>
+                        <layout>
+                          <property name="column">1</property>
+                          <property name="propagate">True</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="JoinRemoveButton">
+                        <property name="text" translatable="yes">Remove</property>
+                        <layout>
+                          <property name="column">2</property>
+                          <property name="propagate">True</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="JoinMoveUpButton">
+                        <property name="text" translatable="yes">Move Up</property>
+                        <layout>
+                          <property name="column">3</property>
+                          <property name="propagate">True</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Button" id="JoinMoveDownButton">
+                        <property name="text" translatable="yes">Move Down</property>
+                        <layout>
+                          <property name="column">4</property>
+                          <property name="propagate">True</property>
+                          <property name="row">3</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Frame" id="JoinCommandFrame">
+                        <property name="padding">0 20</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="columnspan">5</property>
+                          <property name="pady">20</property>
+                          <property name="propagate">True</property>
+                          <property name="row">4</property>
+                        </layout>
+                        <child>
+                          <object class="ttk.Button" id="JoinSaveButton">
+                            <property name="text" translatable="yes">Save As...</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="padx">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Button" id="JoinExitButton">
+                            <property name="command">quit</property>
+                            <property name="text" translatable="yes">Exit</property>
+                            <layout>
+                              <property name="column">1</property>
+                              <property name="padx">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Notebook.Tab" id="TabSplit">
+                <property name="text" translatable="yes">Split Files</property>
+                <child>
+                  <object class="ttk.Frame" id="SplitFrame">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Notebook.Tab" id="TabBg">
+                <property name="text" translatable="yes">Background/Stamp/Number</property>
+                <child>
+                  <object class="ttk.Frame" id="BgFrame">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Notebook.Tab" id="TabRotate">
+                <property name="text" translatable="yes">Rotate Pages</property>
+                <child>
+                  <object class="ttk.Frame" id="RotateFrame">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="Statusbar">
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">s</property>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="StatusText">
+                <property name="text" translatable="yes">Status</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">4</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Menu" id="MainMenu">
+    <child>
+      <object class="tk.Menuitem.Submenu" id="FileMenu">
+        <property name="label" translatable="yes">File</property>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Menuitem.Submenu" id="ViewMenu">
+        <property name="label" translatable="yes">View</property>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Menuitem.Submenu" id="EditMenu">
+        <property name="label" translatable="yes">Edit</property>
+      </object>
+    </child>
+  </object>
+</interface>
