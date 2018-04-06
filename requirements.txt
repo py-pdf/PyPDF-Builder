@@ -1,0 +1,4 @@
+appdirs==1.4.3
+pkg-resources==0.0.0
+pygubu==0.9.8.2
+PyPDF2==1.26.0
