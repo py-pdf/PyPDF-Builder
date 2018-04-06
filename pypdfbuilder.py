@@ -41,10 +41,8 @@ class JoinTabManager:
 
     def save_as(self):
         save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
-        print(f'saving to {save_filepath}')
         merger = PdfFileMerger()
         for f in sorted(self.join_files, key=itemgetter(0)):
-            print(f'appending {f[1]}')
             merger.append(fileobj=open(f[1], 'rb'))
         with open(save_filepath, 'wb') as out_pdf:
             merger.write(out_pdf)

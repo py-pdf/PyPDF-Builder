@@ -3,6 +3,7 @@
   <object class="tk.Toplevel" id="mainwindow">
     <property name="geometry">600x600</property>
     <property name="resizable">none</property>
+    <property name="title" translatable="yes">PyPDF Builder</property>
     <child>
       <object class="ttk.Frame" id="MainApplication">
         <property name="height">600</property>
