@@ -37,6 +37,7 @@
                     <child>
                       <object class="ttk.Label" id="SourceDocsLabel">
                         <property name="font">TkHeadingFont</property>
+                        <property name="justify">left</property>
                         <property name="padding">0 10 0 5</property>
                         <property name="text" translatable="yes">Source Documents</property>
                         <layout>
@@ -57,12 +58,27 @@
                           <property name="propagate">True</property>
                           <property name="row">1</property>
                         </layout>
+                        <child>
+                          <object class="ttk.Treeview.Column" id="FileNameColumn">
+                            <property name="column_anchor">w</property>
+                            <property name="heading_anchor">w</property>
+                            <property name="minwidth">20</property>
+                            <property name="stretch">true</property>
+                            <property name="text" translatable="yes">Filename</property>
+                            <property name="tree_column">true</property>
+                            <property name="visible">true</property>
+                            <property name="width">598</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
                       <object class="ttk.Label" id="CurrentFileInfoLabel">
+                        <property name="anchor">w</property>
+                        <property name="justify">right</property>
                         <property name="padding">0 10</property>
                         <property name="text" translatable="yes">Label_2</property>
+                        <property name="textvariable">string:current_file_info</property>
                         <layout>
                           <property name="column">0</property>
                           <property name="columnspan">3</property>
@@ -73,12 +89,10 @@
                     </child>
                     <child>
                       <object class="ttk.Label" id="JoinPagesFieldLabel">
-                        <property name="justify">right</property>
                         <property name="text" translatable="yes">Pages</property>
-                        <property name="underline">3</property>
+                        <property name="underline">0</property>
                         <layout>
                           <property name="column">3</property>
-                          <property name="ipadx">2</property>
                           <property name="propagate">True</property>
                           <property name="row">2</property>
                         </layout>
@@ -96,6 +110,7 @@
                     </child>
                     <child>
                       <object class="ttk.Button" id="JoinAddButton">
+                        <property name="command">jointab_add_file</property>
                         <property name="text" translatable="yes">Add...</property>
                         <layout>
                           <property name="column">0</property>
@@ -156,6 +171,7 @@
                         </layout>
                         <child>
                           <object class="ttk.Button" id="JoinSaveButton">
+                            <property name="command">jointab_save_as</property>
                             <property name="text" translatable="yes">Save As...</property>
                             <layout>
                               <property name="column">0</property>
