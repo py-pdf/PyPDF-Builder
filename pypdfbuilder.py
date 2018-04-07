@@ -69,7 +69,7 @@ class JoinTabManager:
             merger.write(out_pdf)
 
     def move_up(self):
-        selected_files = self.files_tree_widget.selection()
+        selected_files = self.selected_files
         first_idx = self.files_tree_widget.index(selected_files[0])
         parent = self.files_tree_widget.parent(selected_files[0])
         if first_idx > 0:
@@ -79,7 +79,7 @@ class JoinTabManager:
                 self.files_tree_widget.move(f, parent, new_idx)
 
     def move_down(self):
-        selected_files = list(reversed(self.files_tree_widget.selection()))
+        selected_files = list(reversed(self.selected_files))
         last_idx = self.files_tree_widget.index(selected_files[0])
         parent = self.files_tree_widget.parent(selected_files[0])
         last_idx_in_widget =  self.files_tree_widget.index(self.files_tree_widget.get_children()[-1])
@@ -89,6 +89,11 @@ class JoinTabManager:
                 own_idx = self.files_tree_widget.index(f)
                 new_idx = self.files_tree_widget.index(swap_item)
                 self.files_tree_widget.move(f, parent, new_idx)
+
+    def remove_file(self):
+        for f in self.selected_files:
+            self.files_tree_widget.detach(f)
+
 
 class PyPDFBuilderApplication:
     def __init__(self):
@@ -114,6 +119,9 @@ class PyPDFBuilderApplication:
 
     def jointab_move_down(self):
         self.jointab.move_down()
+
+    def jointab_remove(self):
+        self.jointab.remove_file()
 
     def get_open_files(self, widget_title='Open Files...'):
         return filedialog.askopenfilenames(
