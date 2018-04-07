@@ -1,13 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
   <object class="tk.Toplevel" id="mainwindow">
-    <property name="geometry">600x600</property>
+    <property name="geometry">500x500</property>
+    <property name="height">500</property>
     <property name="resizable">none</property>
     <property name="title" translatable="yes">PyPDF Builder</property>
+    <property name="width">500</property>
     <child>
       <object class="ttk.Frame" id="MainApplication">
-        <property name="height">600</property>
-        <property name="width">600</property>
+        <property name="height">500</property>
+        <property name="width">500</property>
         <bind add="" handler="callback" sequence="&lt;1&gt;" />
         <layout>
           <property name="column">0</property>
@@ -16,8 +18,8 @@
         </layout>
         <child>
           <object class="ttk.Notebook" id="AppNotebook">
-            <property name="height">560</property>
-            <property name="width">600</property>
+            <property name="height">460</property>
+            <property name="width">500</property>
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
@@ -44,8 +46,10 @@
                         <layout>
                           <property name="column">0</property>
                           <property name="columnspan">5</property>
+                          <property name="padx">10</property>
                           <property name="propagate">True</property>
                           <property name="row">0</property>
+                          <property name="sticky">w</property>
                         </layout>
                       </object>
                     </child>
@@ -56,6 +60,7 @@
                         <layout>
                           <property name="column">0</property>
                           <property name="columnspan">5</property>
+                          <property name="padx">10</property>
                           <property name="propagate">True</property>
                           <property name="row">1</property>
                         </layout>
@@ -68,7 +73,7 @@
                             <property name="text" translatable="yes">Filename</property>
                             <property name="tree_column">true</property>
                             <property name="visible">true</property>
-                            <property name="width">598</property>
+                            <property name="width">475</property>
                           </object>
                         </child>
                       </object>
@@ -78,34 +83,39 @@
                         <property name="anchor">w</property>
                         <property name="justify">right</property>
                         <property name="padding">0 10</property>
-                        <property name="text" translatable="yes">Label_2</property>
                         <property name="textvariable">string:current_file_info</property>
                         <layout>
                           <property name="column">0</property>
                           <property name="columnspan">3</property>
+                          <property name="padx">10</property>
                           <property name="propagate">True</property>
                           <property name="row">2</property>
+                          <property name="sticky">w</property>
                         </layout>
                       </object>
                     </child>
                     <child>
                       <object class="ttk.Label" id="JoinPagesFieldLabel">
-                        <property name="text" translatable="yes">Pages</property>
+                        <property name="text" translatable="yes">Pages:</property>
                         <property name="underline">0</property>
                         <layout>
                           <property name="column">3</property>
                           <property name="propagate">True</property>
                           <property name="row">2</property>
+                          <property name="sticky">e</property>
                         </layout>
                       </object>
                     </child>
                     <child>
                       <object class="ttk.Entry" id="JoinPagesField">
                         <property name="justify">left</property>
+                        <property name="width">10</property>
                         <layout>
                           <property name="column">4</property>
+                          <property name="padx">10</property>
                           <property name="propagate">True</property>
                           <property name="row">2</property>
+                          <property name="sticky">e</property>
                         </layout>
                       </object>
                     </child>
@@ -115,8 +125,10 @@
                         <property name="text" translatable="yes">Add...</property>
                         <layout>
                           <property name="column">0</property>
+                          <property name="padx">5</property>
                           <property name="propagate">True</property>
                           <property name="row">3</property>
+                          <property name="sticky">e</property>
                         </layout>
                       </object>
                     </child>
@@ -125,6 +137,7 @@
                         <property name="text" translatable="yes">Sort</property>
                         <layout>
                           <property name="column">1</property>
+                          <property name="padx">5</property>
                           <property name="propagate">True</property>
                           <property name="row">3</property>
                         </layout>
@@ -135,8 +148,10 @@
                         <property name="text" translatable="yes">Remove</property>
                         <layout>
                           <property name="column">2</property>
+                          <property name="padx">5</property>
                           <property name="propagate">True</property>
                           <property name="row">3</property>
+                          <property name="sticky">w</property>
                         </layout>
                       </object>
                     </child>
@@ -147,6 +162,7 @@
                           <property name="column">3</property>
                           <property name="propagate">True</property>
                           <property name="row">3</property>
+                          <property name="sticky">e</property>
                         </layout>
                       </object>
                     </child>
@@ -155,8 +171,10 @@
                         <property name="text" translatable="yes">Move Down</property>
                         <layout>
                           <property name="column">4</property>
+                          <property name="padx">5</property>
                           <property name="propagate">True</property>
                           <property name="row">3</property>
+                          <property name="sticky">w</property>
                         </layout>
                       </object>
                     </child>
