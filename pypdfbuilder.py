@@ -31,9 +31,9 @@ class JoinTabManager:
 
     def on_file_select(self, event):
         selected_file = self.files_tree_widget.selection()[0]
-        item_values = self.files_tree_widget.item(selected_file, 'values')
+        file_data = self.files_tree_widget.item(selected_file, 'values')
         # Concat value
-        self.current_file_info.set(f'{item_values[PDF_FILENAME][0:25]}...({item_values[PDF_PAGES]} pages)')
+        self.current_file_info.set(f'{file_data[PDF_FILENAME][0:25]}...({file_data[PDF_PAGES]} pages)')
 
     def add_file(self):
         add_filepaths = list(self.parent.get_open_files(widget_title='Choose PDFs to Add...'))
@@ -47,10 +47,10 @@ class JoinTabManager:
             with open(fp, 'rb') as in_pdf:
                 pdf_handler = PdfFileReader(in_pdf)
                 pages = pdf_handler.getNumPages()
-            add_data = [pos, fp, filename, pages, '']
-            id = self.files_tree_widget.insert('', tk.END, text=filename, values=add_data)
-            add_data.append(id)             # reference to the widget item id
-            self.join_files.append(add_data)
+            file_data = [pos, fp, filename, pages, '']
+            id = self.files_tree_widget.insert('', tk.END, text=filename, values=file_data)
+            file_data.append(id)             # reference to the widget item id
+            self.join_files.append(file_data)
 
     def save_as(self):
         save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
@@ -60,6 +60,27 @@ class JoinTabManager:
         with open(save_filepath, 'wb') as out_pdf:
             merger.write(out_pdf)
 
+    def move_up(self):
+        selected_files = self.files_tree_widget.selection()
+        first_idx = self.files_tree_widget.index(selected_files[0])
+        parent = self.files_tree_widget.parent(selected_files[0])
+        if first_idx > 0:
+            for f in selected_files:
+                swap_item = self.files_tree_widget.prev(f)
+                new_idx = self.files_tree_widget.index(swap_item)
+                self.files_tree_widget.move(f, parent, new_idx)
+
+    def move_down(self):
+        selected_files = list(reversed(self.files_tree_widget.selection()))
+        last_idx = self.files_tree_widget.index(selected_files[0])
+        parent = self.files_tree_widget.parent(selected_files[0])
+        last_idx_in_widget =  self.files_tree_widget.index(self.files_tree_widget.get_children()[-1])
+        if last_idx < last_idx_in_widget:
+            for f in selected_files:
+                swap_item = self.files_tree_widget.next(f)
+                own_idx = self.files_tree_widget.index(f)
+                new_idx = self.files_tree_widget.index(swap_item)
+                self.files_tree_widget.move(f, parent, new_idx)
 
 class PyPDFBuilderApplication:
     def __init__(self):
@@ -82,6 +103,12 @@ class PyPDFBuilderApplication:
 
     def jointab_save_as(self):
         self.jointab.save_as()
+
+    def jointab_move_up(self):
+        self.jointab.move_up()
+
+    def jointab_move_down(self):
+        self.jointab.move_down()
 
     def get_open_files(self, widget_title='Open Files...'):
         return filedialog.askopenfilenames(

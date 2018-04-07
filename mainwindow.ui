@@ -157,6 +157,7 @@
                     </child>
                     <child>
                       <object class="ttk.Button" id="JoinMoveUpButton">
+                        <property name="command">jointab_move_up</property>
                         <property name="text" translatable="yes">Move Up</property>
                         <layout>
                           <property name="column">3</property>
@@ -168,6 +169,7 @@
                     </child>
                     <child>
                       <object class="ttk.Button" id="JoinMoveDownButton">
+                        <property name="command">jointab_move_down</property>
                         <property name="text" translatable="yes">Move Down</property>
                         <layout>
                           <property name="column">4</property>
