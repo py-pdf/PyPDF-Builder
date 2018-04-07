@@ -274,9 +274,10 @@
           <object class="ttk.Frame" id="Statusbar">
             <layout>
               <property name="column">0</property>
+              <property name="padx">10</property>
               <property name="propagate">True</property>
               <property name="row">1</property>
-              <property name="sticky">s</property>
+              <property name="sticky">sw</property>
             </layout>
             <child>
               <object class="ttk.Label" id="StatusText">
