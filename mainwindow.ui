@@ -10,7 +10,6 @@
       <object class="ttk.Frame" id="MainApplication">
         <property name="height">500</property>
         <property name="width">500</property>
-        <bind add="" handler="callback" sequence="&lt;1&gt;" />
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>
@@ -308,6 +307,44 @@
     <child>
       <object class="tk.Menuitem.Submenu" id="EditMenu">
         <property name="label" translatable="yes">Edit</property>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="Toplevel_1">
+    <property name="geometry">400x400</property>
+    <property name="height">200</property>
+    <property name="pady">0</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="Frame_1">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+        <child>
+          <object class="ttk.Scrollbar" id="Scrollbar_1">
+            <property name="orient">horizontal</property>
+            <bind add="" handler="callback" sequence="&lt;1&gt;" />
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Treeview" id="Treeview_2">
+            <property name="selectmode">extended</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
       </object>
     </child>
   </object>

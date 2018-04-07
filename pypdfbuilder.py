@@ -18,8 +18,8 @@ class JoinTabManager:
         self.parent = parent
         self.files_tree_widget = self.parent.builder.get_object('JoinFilesList')
         self.files_tree_widget.bind("<<TreeviewSelect>>", self.on_file_select)
-        self.join_files = []    # Format for entries: (pos, filepath, filename, pages)
         self.current_file_info = self.parent.builder.get_variable('current_file_info')
+        self.selected_files = []
 
     @property
     def parent(self):
@@ -29,34 +29,42 @@ class JoinTabManager:
     def parent(self, val):
         self.__parent = val
 
+    @property
+    def selected_files(self):
+        return self.__selected_files
+
+    @selected_files.setter
+    def selected_files(self, val):
+        self.__selected_files = val
+
     def on_file_select(self, event):
-        selected_file = self.files_tree_widget.selection()[0]
-        file_data = self.files_tree_widget.item(selected_file, 'values')
-        # Concat value
+        self.selected_files = self.files_tree_widget.selection()
+        self.show_file_info()
+
+    def show_file_info(self):
+        file_data = self.files_tree_widget.item(self.selected_files[0], 'values')
         self.current_file_info.set(f'{file_data[PDF_FILENAME][0:25]}...({file_data[PDF_PAGES]} pages)')
+
+    def get_join_files(self):
+        join_files = []
+        for i in self.files_tree_widget.get_children():
+            yield self.files_tree_widget.item(i)['values']
 
     def add_file(self):
         add_filepaths = list(self.parent.get_open_files(widget_title='Choose PDFs to Add...'))
-        # print(f'Return value: {add_filepaths}\nListed: {add_filepath_list}')
         for fp in add_filepaths:
             filename = os.path.basename(fp)
-            if len(self.join_files) > 0:
-                pos = max(self.join_files, key=itemgetter(PDF_POSITION))[PDF_POSITION] + 1
-            else:
-                pos = 0
             with open(fp, 'rb') as in_pdf:
                 pdf_handler = PdfFileReader(in_pdf)
                 pages = pdf_handler.getNumPages()
-            file_data = [pos, fp, filename, pages, '']
-            id = self.files_tree_widget.insert('', tk.END, text=filename, values=file_data)
-            file_data.append(id)             # reference to the widget item id
-            self.join_files.append(file_data)
+            file_data = (fp, filename, pages, '')
+            self.files_tree_widget.insert('', tk.END, text=filename, values=file_data)
 
     def save_as(self):
         save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
         merger = PdfFileMerger()
-        for f in sorted(self.join_files, key=itemgetter(PDF_POSITION)):
-            merger.append(fileobj=open(f[1], 'rb'))
+        for f in self.get_join_files():
+            merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'))
         with open(save_filepath, 'wb') as out_pdf:
             merger.write(out_pdf)
 
@@ -95,9 +103,6 @@ class PyPDFBuilderApplication:
 
         self.jointab = JoinTabManager(self)
 
-    def callback(self):
-        pass
-
     def jointab_add_file(self):
         self.jointab.add_file()
 
@@ -112,7 +117,7 @@ class PyPDFBuilderApplication:
 
     def get_open_files(self, widget_title='Open Files...'):
         return filedialog.askopenfilenames(
-            initialdir='/home/thomas/Dropbox/eBooks/',
+            # initialdir='/home/thomas/Dropbox/eBooks/',
             title=widget_title,
             filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
         )
