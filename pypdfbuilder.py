@@ -50,6 +50,21 @@ class JoinTabManager:
         for i in self.files_tree_widget.get_children():
             yield self.files_tree_widget.item(i)['values']
 
+    def parse_page_select(self, page_select):
+        '''
+        As this method deals with raw user input, there will have to be a whole lot of error checking
+        built into this function at a later time. Really don't look forward to this... at all.
+        '''
+        if page_select == '':
+            yield 'all'
+        for page_range in page_select.replace(' ', '').split(','):
+            for sep in ':-':
+                if sep in page_range:
+                    range_list = page_range.split(sep)
+                    yield set(sorted((int(range_list[0])-1, int(range_list[1]))))
+                else:
+                    yield set(sorted((int(page_range)-1, int(page_range))))
+
     def add_file(self):
         add_filepaths = list(self.parent.get_open_files(widget_title='Choose PDFs to Add...'))
         for fp in add_filepaths:
@@ -64,7 +79,11 @@ class JoinTabManager:
         save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
         merger = PdfFileMerger()
         for f in self.get_join_files():
-            merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'))
+            for page_range in self.parse_page_select(f[PDF_PAGESELECT]):
+                if page_range == 'all':
+                    merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'))
+                else:
+                    merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'), pages=page_range)
         with open(save_filepath, 'wb') as out_pdf:
             merger.write(out_pdf)
 
