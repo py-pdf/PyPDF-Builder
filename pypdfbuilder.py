@@ -73,7 +73,6 @@ class JoinTabManager:
         As this method deals with raw user input, there will have to be a whole lot of error checking
         built into this function at a later time. Really don't look forward to this... at all.
         '''
-        print(f'page select passed to parse method: "{page_select}"')
         for page_range in page_select.replace(' ', '').split(','):
             if '-' in page_range:
                 range_list = page_range.split('-')
@@ -95,12 +94,10 @@ class JoinTabManager:
         save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
         merger = PdfFileMerger()
         for f in self.get_join_files():
-            print(f'values in widget: "{f}"')
             if not f[PDF_PAGESELECT]:
                 merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'))
             else:
                 for page_range in self.parse_page_select(str(f[PDF_PAGESELECT])):
-                    print(f'Got back parser values: {page_range}')
                     merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'), pages=page_range)
         with open(save_filepath, 'wb') as out_pdf:
             merger.write(out_pdf)

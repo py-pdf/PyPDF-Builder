@@ -1,14 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
   <object class="tk.Toplevel" id="mainwindow">
-    <property name="geometry">500x500</property>
-    <property name="height">500</property>
+    <property name="geometry">500x400</property>
+    <property name="height">400</property>
+    <property name="pady">0</property>
     <property name="resizable">none</property>
+    <property name="takefocus">false</property>
     <property name="title" translatable="yes">PyPDF Builder</property>
     <property name="width">500</property>
     <child>
       <object class="ttk.Frame" id="MainApplication">
-        <property name="height">500</property>
+        <property name="height">400</property>
         <property name="width">500</property>
         <layout>
           <property name="column">0</property>
@@ -17,7 +19,7 @@
         </layout>
         <child>
           <object class="ttk.Notebook" id="AppNotebook">
-            <property name="height">460</property>
+            <property name="height">360</property>
             <property name="width">500</property>
             <layout>
               <property name="column">0</property>
