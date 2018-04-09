@@ -56,6 +56,7 @@
                       <object class="ttk.Treeview" id="JoinFilesList">
                         <property name="height">8</property>
                         <property name="selectmode">extended</property>
+                        <bind add="" handler="jointab_on_file_select" sequence="&lt;&lt;TreeviewSelect&gt;&gt;" />
                         <layout>
                           <property name="column">0</property>
                           <property name="columnspan">5</property>
@@ -64,15 +65,39 @@
                           <property name="row">1</property>
                         </layout>
                         <child>
+                          <object class="ttk.Treeview.Column" id="IconColumn">
+                            <property name="column_anchor">w</property>
+                            <property name="heading_anchor">w</property>
+                            <property name="minwidth">0</property>
+                            <property name="stretch">false</property>
+                            <property name="text" translatable="yes">Column_1</property>
+                            <property name="tree_column">true</property>
+                            <property name="visible">false</property>
+                            <property name="width">0</property>
+                          </object>
+                        </child>
+                        <child>
                           <object class="ttk.Treeview.Column" id="FileNameColumn">
                             <property name="column_anchor">w</property>
                             <property name="heading_anchor">w</property>
                             <property name="minwidth">20</property>
                             <property name="stretch">true</property>
                             <property name="text" translatable="yes">Filename</property>
-                            <property name="tree_column">true</property>
+                            <property name="tree_column">false</property>
                             <property name="visible">true</property>
-                            <property name="width">475</property>
+                            <property name="width">390</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Treeview.Column" id="PageSelectColumn">
+                            <property name="column_anchor">w</property>
+                            <property name="heading_anchor">w</property>
+                            <property name="minwidth">20</property>
+                            <property name="stretch">true</property>
+                            <property name="text" translatable="yes">Pages</property>
+                            <property name="tree_column">false</property>
+                            <property name="visible">true</property>
+                            <property name="width">85</property>
                           </object>
                         </child>
                       </object>
@@ -107,8 +132,10 @@
                     </child>
                     <child>
                       <object class="ttk.Entry" id="JoinPagesField">
-                        <property name="justify">left</property>
+                        <property name="font">TkDefaultFont</property>
+                        <property name="textvariable">string:page_select_input</property>
                         <property name="width">10</property>
+                        <bind add="" handler="jointab_enter_page_selection" sequence="&lt;FocusOut&gt;" />
                         <layout>
                           <property name="column">4</property>
                           <property name="padx">10</property>
@@ -281,7 +308,8 @@
             </layout>
             <child>
               <object class="ttk.Label" id="StatusText">
-                <property name="text" translatable="yes">Status</property>
+                <property name="text" translatable="yes">PyPDF v0.1</property>
+                <property name="textvariable">string:         </property>
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>

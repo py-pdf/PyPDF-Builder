@@ -17,8 +17,10 @@ class JoinTabManager:
     def __init__(self, parent=None):
         self.parent = parent
         self.files_tree_widget = self.parent.builder.get_object('JoinFilesList')
-        self.files_tree_widget.bind("<<TreeviewSelect>>", self.on_file_select)
+        # self.files_tree_widget['columns'] = (0,0)
+        self.files_tree_widget['displaycolumns'] = ('FileNameColumn', 'PageSelectColumn')
         self.current_file_info = self.parent.builder.get_variable('current_file_info')
+        self.page_select_input = self.parent.builder.get_variable('page_select_input')
         self.selected_files = []
 
     @property
@@ -40,10 +42,26 @@ class JoinTabManager:
     def on_file_select(self, event):
         self.selected_files = self.files_tree_widget.selection()
         self.show_file_info()
+        self.show_selected_pages()
+
+    def enter_page_selection(self, event):
+        '''
+        This medthod is called when the page selection input field loses focus
+        i.e. when input is completed
+        '''
+        for f in self.selected_files:
+            file_data = self.files_tree_widget.item(f, 'values')
+            page_select = self.page_select_input.get()
+            new_tuple = (file_data[PDF_FILENAME], page_select, file_data[PDF_FILEPATH], file_data[PDF_PAGES])
+            self.files_tree_widget.item(f, values=new_tuple)
 
     def show_file_info(self):
         file_data = self.files_tree_widget.item(self.selected_files[0], 'values')
         self.current_file_info.set(f'{file_data[PDF_FILENAME][0:25]}...({file_data[PDF_PAGES]} pages)')
+
+    def show_selected_pages(self):
+        file_data = self.files_tree_widget.item(self.selected_files[0], 'values')
+        self.page_select_input.set(file_data[PDF_PAGESELECT])
 
     def get_join_files(self):
         join_files = []
@@ -59,29 +77,30 @@ class JoinTabManager:
         for page_range in page_select.replace(' ', '').split(','):
             if '-' in page_range:
                 range_list = page_range.split('-')
-                yield set(sorted((int(range_list[0])-1, int(range_list[1]))))
+                yield tuple(sorted((int(range_list[0])-1, int(range_list[1]))))
             else:
-                yield set(sorted((int(page_range)-1, int(page_range))))
+                yield tuple(sorted((int(page_range)-1, int(page_range))))
 
     def add_file(self):
         add_filepaths = list(self.parent.get_open_files(widget_title='Choose PDFs to Add...'))
-        for fp in add_filepaths:
-            filename = os.path.basename(fp)
-            with open(fp, 'rb') as in_pdf:
+        for filepath in add_filepaths:
+            filename = os.path.basename(filepath)
+            with open(filepath, 'rb') as in_pdf:
                 pdf_handler = PdfFileReader(in_pdf)
                 pages = pdf_handler.getNumPages()
-            file_data = (fp, filename, pages, '')
-            self.files_tree_widget.insert('', tk.END, text=filename, values=file_data)
+            file_data = (filename, '', filepath, pages)
+            self.files_tree_widget.insert('', tk.END, values=file_data)
 
     def save_as(self):
         save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
         merger = PdfFileMerger()
         for f in self.get_join_files():
-            print(f'page select value in widget: "{f[PDF_PAGESELECT]}"')
-            if len(f[PDF_PAGESELECT]) == 0:
+            print(f'values in widget: "{f}"')
+            if not f[PDF_PAGESELECT]:
                 merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'))
             else:
-                for page_range in self.parse_page_select(f[PDF_PAGESELECT]):
+                for page_range in self.parse_page_select(str(f[PDF_PAGESELECT])):
+                    print(f'Got back parser values: {page_range}')
                     merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'), pages=page_range)
         with open(save_filepath, 'wb') as out_pdf:
             merger.write(out_pdf)
@@ -128,6 +147,12 @@ class PyPDFBuilderApplication:
 
     def jointab_add_file(self):
         self.jointab.add_file()
+
+    def jointab_on_file_select(self, event):
+        self.jointab.on_file_select(event)
+
+    def jointab_enter_page_selection(self, event):
+        self.jointab.enter_page_selection(event)
 
     def jointab_save_as(self):
         self.jointab.save_as()
