@@ -13,6 +13,18 @@ from PyPDF2 import PdfFileMerger, PdfFileReader
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
+class SplitTabManager:
+    def __init__(self, parent=None):
+        self.parent = parent
+
+    @property
+    def parent(self):
+        return self.__parent
+
+    @parent.setter
+    def parent(self, val):
+        self.__parent = val
+
 class JoinTabManager:
     def __init__(self, parent=None):
         self.parent = parent
@@ -141,6 +153,7 @@ class PyPDFBuilderApplication:
         self.builder.connect_callbacks(self)
 
         self.jointab = JoinTabManager(self)
+        self.splittab = SplitTabManager(self)
 
     def jointab_add_file(self):
         self.jointab.add_file()
