@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import filedialog
 from pygubu import Builder as pgBuilder
 
-from PyPDF2 import PdfFileMerger, PdfFileReader
+from PyPDF2 import PdfFileMerger, PdfFileReader, PdfFileWriter
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -16,6 +16,9 @@ CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 class SplitTabManager:
     def __init__(self, parent=None):
         self.parent = parent
+        self.split_filepath = None
+        self.pdf_pages = None
+        self.split_file_info = self.parent.builder.get_variable('split_file_info')
 
     @property
     def parent(self):
@@ -24,6 +27,34 @@ class SplitTabManager:
     @parent.setter
     def parent(self, val):
         self.__parent = val
+
+    def open_file(self):
+        self.split_filepath = self.parent.get_open_file(widget_title='Choose PDF to Split...')
+        with open(self.split_filepath, 'rb') as in_pdf:
+            pdf_handler = PdfFileReader(in_pdf)
+            self.pdf_pages = pdf_handler.getNumPages()
+        self.show_file_info()
+
+    def show_file_info(self):
+        filename = os.path.basename(self.split_filepath)
+        self.split_file_info.set(f'{filename[0:35]}...({self.pdf_pages} pages)')
+
+    def save_as(self):
+        basepath = os.path.splitext(self.split_filepath)[0]
+        # in spite of discussion here https://stackoverflow.com/a/2189814
+        # we'll just go the lazy way to count the number of needed digits:
+        num_length = len(str(abs(self.pdf_pages)))
+        in_pdf = PdfFileReader(open(self.split_filepath, "rb"))
+        for p in range(self.pdf_pages):
+            output_path = f"{basepath}_{str(p+1).rjust(num_length, '0')}.pdf"
+            out_pdf = PdfFileWriter()
+            out_pdf.addPage(in_pdf.getPage(p))
+            with open(output_path, "wb") as out_pdf_stream:
+                out_pdf.write(out_pdf_stream)
+
+
+
+
 
 class JoinTabManager:
     def __init__(self, parent=None):
@@ -176,9 +207,21 @@ class PyPDFBuilderApplication:
     def jointab_remove(self):
         self.jointab.remove_file()
 
+    def splittab_open_file(self):
+        self.splittab.open_file()
+
+    def splittab_save_as(self):
+        self.splittab.save_as()
+
     def get_open_files(self, widget_title='Open Files...'):
         return filedialog.askopenfilenames(
             # initialdir='/home/thomas/Dropbox/eBooks/',
+            title=widget_title,
+            filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
+        )
+
+    def get_open_file(self, widget_title='Open File...'):
+        return filedialog.askopenfilename(
             title=widget_title,
             filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
         )
