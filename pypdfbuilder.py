@@ -40,17 +40,19 @@ class SplitTabManager:
         self.split_file_info.set(f'{filename[0:35]}...({self.pdf_pages} pages)')
 
     def save_as(self):
-        basepath = os.path.splitext(self.split_filepath)[0]
-        # in spite of discussion here https://stackoverflow.com/a/2189814
-        # we'll just go the lazy way to count the number of needed digits:
-        num_length = len(str(abs(self.pdf_pages)))
-        in_pdf = PdfFileReader(open(self.split_filepath, "rb"))
-        for p in range(self.pdf_pages):
-            output_path = f"{basepath}_{str(p+1).rjust(num_length, '0')}.pdf"
-            out_pdf = PdfFileWriter()
-            out_pdf.addPage(in_pdf.getPage(p))
-            with open(output_path, "wb") as out_pdf_stream:
-                out_pdf.write(out_pdf_stream)
+        # Todo: check if there is an input file. Otherwise, do nothing
+        if self.split_filepath:
+            basepath = os.path.splitext(self.split_filepath)[0]
+            # in spite of discussion here https://stackoverflow.com/a/2189814
+            # we'll just go the lazy way to count the number of needed digits:
+            num_length = len(str(abs(self.pdf_pages)))
+            in_pdf = PdfFileReader(open(self.split_filepath, "rb"))
+            for p in range(self.pdf_pages):
+                output_path = f"{basepath}_{str(p+1).rjust(num_length, '0')}.pdf"
+                out_pdf = PdfFileWriter()
+                out_pdf.addPage(in_pdf.getPage(p))
+                with open(output_path, "wb") as out_pdf_stream:
+                    out_pdf.write(out_pdf_stream)
 
 
 
@@ -134,16 +136,18 @@ class JoinTabManager:
             self.files_tree_widget.insert('', tk.END, values=file_data)
 
     def save_as(self):
-        save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
-        merger = PdfFileMerger()
-        for f in self.get_join_files():
-            if not f[PDF_PAGESELECT]:
-                merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'))
-            else:
-                for page_range in self.parse_page_select(str(f[PDF_PAGESELECT])):
-                    merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'), pages=page_range)
-        with open(save_filepath, 'wb') as out_pdf:
-            merger.write(out_pdf)
+        if len(list(self.get_join_files())) > 0:
+            # Todo: check if there are input files. Otherwise, do nothing
+            save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
+            merger = PdfFileMerger()
+            for f in self.get_join_files():
+                if not f[PDF_PAGESELECT]:
+                    merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'))
+                else:
+                    for page_range in self.parse_page_select(str(f[PDF_PAGESELECT])):
+                        merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'), pages=page_range)
+            with open(save_filepath, 'wb') as out_pdf:
+                merger.write(out_pdf)
 
     def move_up(self):
         selected_files = self.selected_files

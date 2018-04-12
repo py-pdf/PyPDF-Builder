@@ -2,6 +2,8 @@
 
 A cross-platform clone of [PDFTK Builder](http://angusj.com/pdftkb/) written in Python. Yes, Python!
 
+The project's goal is a simple, end-user friendly GUI for the [PyPDF2](https://github.com/mstamy2/PyPDF2) package that can join, split, stamp/number, and rotate PDFs.
+
 ![](screenshot.png)
 
 ## Getting Started
@@ -20,8 +22,6 @@ These instructions will get you a copy of the project up and running on your loc
 PyPDF Builder is built on [Tkinter](https://docs.python.org/3/library/tk.html), [Pygubu](https://github.com/alejandroautalan/pygubu) and [PyPDF2](https://github.com/mstamy2/PyPDF2), a pure-python PDF library. Running `pip freeze` should give you something like this:
 
 ```
-appdirs==1.4.3
-pkg-resources==0.0.0
 pygubu==0.9.8.2
 PyPDF2==1.26.0
 ```
@@ -33,3 +33,16 @@ Python 3.6 was used in development... I haven't checked for compatibility with l
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
+
+* [Matthew Stamy](https://github.com/mstamy2): Creator and current maintainer of the PyPDF2 Python package
+
+## To Do
+
+[X] Join Tab Functionality
+[X] Split Tab Functionality
+[ ] Documentation
+[ ] Write tests
+[ ] Stamp/Background/Number Tab
+[ ] Rotate Pages
+[ ] Package via pyInstaller
+[ ] Distribution via Releases on GitHub
