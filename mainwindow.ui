@@ -27,6 +27,214 @@
               <property name="row">0</property>
             </layout>
             <child>
+              <object class="ttk.Notebook.Tab" id="TabRotate">
+                <property name="text" translatable="yes">Rotate Pages</property>
+                <child>
+                  <object class="ttk.Frame" id="RotateFrame">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                      <rows>
+                        <row id="0">
+                          <property name="weight">1</property>
+                        </row>
+                      </rows>
+                      <columns>
+                        <column id="0">
+                          <property name="weight">1</property>
+                        </column>
+                      </columns>
+                    </layout>
+                    <child>
+                      <object class="ttk.Frame" id="RotateSourceFrame">
+                        <property name="height">200</property>
+                        <property name="width">200</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                        <child>
+                          <object class="ttk.Button" id="RotateSourceButton">
+                            <property name="command">rotatetab_open_file</property>
+                            <property name="text" translatable="yes">Source PDF File …</property>
+                            <property name="width">35</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="propagate">True</property>
+                              <property name="row">1</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Label" id="RotateFileInfo">
+                            <property name="padding">0 5</property>
+                            <property name="textvariable">string:rotate_file_info</property>
+                            <property name="underline">0</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="propagate">True</property>
+                              <property name="row">2</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Frame" id="RotatePageOptionsFrame">
+                            <property name="height">200</property>
+                            <property name="width">200</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="pady">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">3</property>
+                            </layout>
+                            <child>
+                              <object class="ttk.Label" id="PagesLabel_1">
+                                <property name="text" translatable="yes">Rotate pages from</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="propagate">True</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Entry" id="RotateFromPageEntry">
+                                <property name="textvariable">int:rotate_from_page</property>
+                                <property name="width">3</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="padx">5</property>
+                                  <property name="propagate">True</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Label" id="PagesLabel_2">
+                                <property name="justify">center</property>
+                                <property name="text" translatable="yes">to	</property>
+                                <property name="underline">0</property>
+                                <property name="width">2</property>
+                                <layout>
+                                  <property name="column">2</property>
+                                  <property name="propagate">True</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Entry" id="RotateToPageEntry">
+                                <property name="textvariable">int:rotate_to_page</property>
+                                <property name="width">3</property>
+                                <layout>
+                                  <property name="column">3</property>
+                                  <property name="padx">5</property>
+                                  <property name="propagate">True</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Frame" id="RotateDegreesFrame">
+                            <property name="height">200</property>
+                            <property name="width">200</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="pady">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">4</property>
+                            </layout>
+                            <child>
+                              <object class="ttk.Radiobutton" id="RotateLeftButton">
+                                <property name="text" translatable="yes">Left 90°</property>
+                                <property name="value">LEFT</property>
+                                <property name="variable">string:rotate_amount</property>
+                                <property name="width">8</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="padx">10</property>
+                                  <property name="propagate">True</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Radiobutton" id="RotateRightButton">
+                                <property name="text" translatable="yes">Right 90°</property>
+                                <property name="value">RIGHT</property>
+                                <property name="variable">string:rotate_amount</property>
+                                <property name="width">8</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="padx">10</property>
+                                  <property name="propagate">True</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Radiobutton" id="Rotate180Button">
+                                <property name="text" translatable="yes">180°</property>
+                                <property name="value">ONE_EIGHTY</property>
+                                <property name="variable">string:rotate_amount</property>
+                                <property name="width">8</property>
+                                <layout>
+                                  <property name="column">2</property>
+                                  <property name="padx">10</property>
+                                  <property name="propagate">True</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Frame" id="RotateCommandFrame">
+                        <property name="padding">0 20</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">3</property>
+                        </layout>
+                        <child>
+                          <object class="ttk.Button" id="RotateSaveButton">
+                            <property name="command">rotatetab_save_as</property>
+                            <property name="text" translatable="yes">Save</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="padx">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Button" id="RotateExitButton">
+                            <property name="command">quit</property>
+                            <property name="text" translatable="yes">Exit</property>
+                            <layout>
+                              <property name="column">1</property>
+                              <property name="padx">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="ttk.Notebook.Tab" id="TabJoin">
                 <property name="text" translatable="yes">Join Files</property>
                 <child>
@@ -355,22 +563,6 @@
                 <property name="text" translatable="yes">Background/Stamp/Number</property>
                 <child>
                   <object class="ttk.Frame" id="BgFrame">
-                    <property name="height">200</property>
-                    <property name="width">200</property>
-                    <layout>
-                      <property name="column">0</property>
-                      <property name="propagate">True</property>
-                      <property name="row">0</property>
-                    </layout>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="ttk.Notebook.Tab" id="TabRotate">
-                <property name="text" translatable="yes">Rotate Pages</property>
-                <child>
-                  <object class="ttk.Frame" id="RotateFrame">
                     <property name="height">200</property>
                     <property name="width">200</property>
                     <layout>

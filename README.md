@@ -42,6 +42,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [X] Split Tab Functionality
 [ ] Documentation
 [ ] Write tests
+[ ] Error checking user input
 [ ] Stamp/Background/Number Tab
 [ ] Rotate Pages
 [ ] Package via pyInstaller
