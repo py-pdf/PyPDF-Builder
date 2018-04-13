@@ -55,7 +55,53 @@ class SplitTabManager:
                     out_pdf.write(out_pdf_stream)
 
 
+class RotateTabManager:
+    def __init__(self, parent=None):
+        self.parent = parent
+        self.rotate_filepath = None
+        self.pdf_pages = None
+        self.rotate_file_info = self.parent.builder.get_variable('rotate_file_info')
+        self.rotate_from_page = self.parent.builder.get_variable('rotate_from_page')
+        self.rotate_to_page = self.parent.builder.get_variable('rotate_to_page')
 
+    @property
+    def parent(self):
+        return self.__parent
+
+    @parent.setter
+    def parent(self, val):
+        self.__parent = val
+
+    def open_file(self):
+        self.rotate_filepath = self.parent.get_open_file(widget_title='Choose PDF to Rotate...')
+        with open(self.rotate_filepath, 'rb') as in_pdf:
+            pdf_handler = PdfFileReader(in_pdf)
+            self.pdf_pages = pdf_handler.getNumPages()
+        self.show_file_info()
+        self.show_rotate_pages()
+
+    def show_rotate_pages(self):
+        self.rotate_from_page.set(1)
+        self.rotate_to_page.set(self.pdf_pages)
+
+    def show_file_info(self):
+        filename = os.path.basename(self.rotate_filepath)
+        self.rotate_file_info.set(f'{filename[0:35]}...({self.pdf_pages} pages)')
+
+    def save_as(self):
+        # Todo: check if there is an input file. Otherwise, do nothing
+        if self.rotate_filepath:
+            basepath = os.path.splitext(self.rotate_filepath)[0]
+            # in spite of discussion here https://stackoverflow.com/a/2189814
+            # we'll just go the lazy way to count the number of needed digits:
+            num_length = len(str(abs(self.pdf_pages)))
+            in_pdf = PdfFileReader(open(self.rotate_filepath, "rb"))
+            for p in range(self.pdf_pages):
+                output_path = f"{basepath}_{str(p+1).rjust(num_length, '0')}.pdf"
+                out_pdf = PdfFileWriter()
+                out_pdf.addPage(in_pdf.getPage(p))
+                with open(output_path, "wb") as out_pdf_stream:
+                    out_pdf.write(out_pdf_stream)
 
 
 class JoinTabManager:
@@ -189,6 +235,7 @@ class PyPDFBuilderApplication:
 
         self.jointab = JoinTabManager(self)
         self.splittab = SplitTabManager(self)
+        self.rotatetab = RotateTabManager(self)
 
     def jointab_add_file(self):
         self.jointab.add_file()
@@ -216,6 +263,9 @@ class PyPDFBuilderApplication:
 
     def splittab_save_as(self):
         self.splittab.save_as()
+
+    def rotatetab_open_file(self):
+        self.rotatetab.open_file()
 
     def get_open_files(self, widget_title='Open Files...'):
         return filedialog.askopenfilenames(

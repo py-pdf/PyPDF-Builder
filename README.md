@@ -38,12 +38,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## To Do
 
-[X] Join Tab Functionality
-[X] Split Tab Functionality
-[ ] Documentation
-[ ] Write tests
-[ ] Error checking user input
-[ ] Stamp/Background/Number Tab
-[ ] Rotate Pages
-[ ] Package via pyInstaller
-[ ] Distribution via Releases on GitHub
+- [X] Join Tab Functionality
+- [X] Split Tab Functionality
+- [ ] Documentation
+- [ ] Write tests
+- [ ] Error checking user input
+- [ ] Error/Exception Handling
+- [ ] Stamp/Background/Number Tab
+- [ ] Rotate Pages
+- [ ] Package via pyInstaller
+- [ ] Distribution via Releases on GitHub

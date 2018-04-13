@@ -73,7 +73,6 @@
                           <object class="ttk.Label" id="RotateFileInfo">
                             <property name="padding">0 5</property>
                             <property name="textvariable">string:rotate_file_info</property>
-                            <property name="underline">0</property>
                             <layout>
                               <property name="column">0</property>
                               <property name="propagate">True</property>
