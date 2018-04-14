@@ -110,8 +110,11 @@ class RotateTabManager:
         if self.rotate_filepath:
             in_pdf = PdfFileReader(open(self.rotate_filepath, "rb"))
             out_pdf = PdfFileWriter()
-            for p in range(*page_range):
-                out_pdf.addPage(in_pdf.getPage(p).rotateClockwise(ROTATE_DEGREES[self.rotate_amount.get()]))
+            for p in range(self.pdf_pages):
+                if p in range(*page_range):
+                    out_pdf.addPage(in_pdf.getPage(p).rotateClockwise(ROTATE_DEGREES[self.rotate_amount.get()]))
+                else:
+                    out_pdf.addPage(in_pdf.getPage(p))
             with open(save_filepath, "wb") as out_pdf_stream:
                 out_pdf.write(out_pdf_stream)
 
