@@ -40,7 +40,6 @@ class SplitTabManager:
         self.split_file_info.set(f'{filename[0:35]}...({self.pdf_pages} pages)')
 
     def save_as(self):
-        # Todo: check if there is an input file. Otherwise, do nothing
         if self.split_filepath:
             basepath = os.path.splitext(self.split_filepath)[0]
             # in spite of discussion here https://stackoverflow.com/a/2189814
@@ -63,6 +62,12 @@ class RotateTabManager:
         self.rotate_file_info = self.parent.builder.get_variable('rotate_file_info')
         self.rotate_from_page = self.parent.builder.get_variable('rotate_from_page')
         self.rotate_to_page = self.parent.builder.get_variable('rotate_to_page')
+        self.rotate_amount = self.parent.builder.get_variable('rotate_amount')
+        # Set default values. No idea how to avoid this using only the UI file, so I'm
+        # breaking the MVC principle here.
+        self.rotate_amount.set(None)
+        self.rotate_from_page.set('')
+        self.rotate_to_page.set('')
 
     @property
     def parent(self):
@@ -89,26 +94,21 @@ class RotateTabManager:
         self.rotate_file_info.set(f'{filename[0:35]}...({self.pdf_pages} pages)')
 
     def save_as(self):
-        # Todo: check if there is an input file. Otherwise, do nothing
+        page_range = (self.rotate_from_page.get()-1, self.rotate_to_page.get())
+        save_filepath = self.parent.get_save_file(widget_title='Save New PDF to...')
         if self.rotate_filepath:
-            basepath = os.path.splitext(self.rotate_filepath)[0]
-            # in spite of discussion here https://stackoverflow.com/a/2189814
-            # we'll just go the lazy way to count the number of needed digits:
-            num_length = len(str(abs(self.pdf_pages)))
             in_pdf = PdfFileReader(open(self.rotate_filepath, "rb"))
-            for p in range(self.pdf_pages):
-                output_path = f"{basepath}_{str(p+1).rjust(num_length, '0')}.pdf"
-                out_pdf = PdfFileWriter()
-                out_pdf.addPage(in_pdf.getPage(p))
-                with open(output_path, "wb") as out_pdf_stream:
-                    out_pdf.write(out_pdf_stream)
+            out_pdf = PdfFileWriter()
+            for p in range(*page_range):
+                out_pdf.addPage(in_pdf.getPage(p).rotateClockwise(ROTATE_DEGREES[self.rotate_amount.get()]))
+            with open(save_filepath, "wb") as out_pdf_stream:
+                out_pdf.write(out_pdf_stream)
 
 
 class JoinTabManager:
     def __init__(self, parent=None):
         self.parent = parent
         self.files_tree_widget = self.parent.builder.get_object('JoinFilesList')
-        # self.files_tree_widget['columns'] = (0,0)
         self.files_tree_widget['displaycolumns'] = ('FileNameColumn', 'PageSelectColumn')
         self.current_file_info = self.parent.builder.get_variable('current_file_info')
         self.page_select_input = self.parent.builder.get_variable('page_select_input')
@@ -183,7 +183,6 @@ class JoinTabManager:
 
     def save_as(self):
         if len(list(self.get_join_files())) > 0:
-            # Todo: check if there are input files. Otherwise, do nothing
             save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
             merger = PdfFileMerger()
             for f in self.get_join_files():
@@ -266,6 +265,9 @@ class PyPDFBuilderApplication:
 
     def rotatetab_open_file(self):
         self.rotatetab.open_file()
+
+    def rotatetab_save_as(self):
+        self.rotatetab.save_as()
 
     def get_open_files(self, widget_title='Open Files...'):
         return filedialog.askopenfilenames(
