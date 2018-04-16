@@ -4,5 +4,6 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"virtualenv": "/home/thomas/.virtualenvs/pypdfbuilder"
 }

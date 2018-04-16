@@ -241,16 +241,38 @@ class PyPDFBuilderApplication:
         self.builder.add_from_file(os.path.join(CURRENT_DIR, 'mainwindow.ui'))
 
         self.mainwindow = self.builder.get_object('mainwindow')
+        self.notebook = self.builder.get_object('AppNotebook')
+        self.tabs = {
+            'join': self.builder.get_object('JoinFrame'),
+            'split': self.builder.get_object('SplitFrame'),
+            'bg': self.builder.get_object('BgFrame'),
+            'rotate': self.builder.get_object('RotateFrame'),
+        }
+        self.mainwindow.bind_all('<Control-j>', self.select_tab_join)
+        self.mainwindow.bind_all('<Control-s>', self.select_tab_split)
+        self.mainwindow.bind_all('<Control-b>', self.select_tab_bg)
+        self.mainwindow.bind_all('<Control-r>', self.select_tab_rotate)
         self.mainmenu = self.builder.get_object('MainMenu')
         self.mainwindow.config(menu=self.mainmenu)
 
         self.builder.connect_callbacks(self)
 
+        # Todo get pickled data: last directory visited by user
         self.__current_dir = USER_DIR
 
         self.jointab = JoinTabManager(self)
         self.splittab = SplitTabManager(self)
         self.rotatetab = RotateTabManager(self)
+
+    # boy oh boy if there's anyway to do these callsbacks more elegantly, please let me gain that knowledge!
+    def select_tab_join(self, *args, **kwargs):
+        self.notebook.select(self.tabs['join'])
+    def select_tab_split(self, *args, **kwargs):
+        self.notebook.select(self.tabs['split'])
+    def select_tab_bg(self, *args, **kwargs):
+        self.notebook.select(self.tabs['bg'])
+    def select_tab_rotate(self, *args, **kwargs):
+        self.notebook.select(self.tabs['rotate'])
 
     def jointab_add_file(self):
         self.jointab.add_file()

@@ -604,16 +604,66 @@
     <child>
       <object class="tk.Menuitem.Submenu" id="FileMenu">
         <property name="label" translatable="yes">File</property>
+        <child>
+          <object class="tk.Menuitem.Command" id="FileExit">
+            <property name="command">quit</property>
+            <property name="command_id_arg">false</property>
+            <property name="label" translatable="yes">Exit</property>
+            <property name="accelerator">Alt+F4</property>
+          </object>
+        </child>
       </object>
     </child>
     <child>
       <object class="tk.Menuitem.Submenu" id="ViewMenu">
         <property name="label" translatable="yes">View</property>
+        <child>
+          <object class="tk.Menuitem.Command" id="ViewJoin">
+            <property name="command">select_tab_join</property>
+            <property name="command_id_arg">false</property>
+            <property name="label" translatable="yes">Join Files</property>
+            <property name="accelerator">Strg+J</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="ViewSplit">
+            <property name="command">select_tab_split</property>
+            <property name="command_id_arg">false</property>
+            <property name="label" translatable="yes">Split Files</property>
+            <property name="accelerator">Strg+S</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="ViewBg">
+            <property name="command">select_tab_bg</property>
+            <property name="command_id_arg">false</property>
+            <property name="label" translatable="yes">Background/Stamp/Number</property>
+            <property name="accelerator">Strg+B</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="ViewRotate">
+            <property name="command">select_tab_rotate</property>
+            <property name="command_id_arg">false</property>
+            <property name="label" translatable="yes">Rotate Pages</property>
+            <property name="accelerator">Strg+R</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Separator" id="ViewSeparator_1" />
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="ViewProtection">
+            <property name="command_id_arg">false</property>
+            <property name="label" translatable="yes">Show Document Protection</property>
+            <property name="accelerator">Strg+P</property>
+          </object>
+        </child>
       </object>
     </child>
     <child>
-      <object class="tk.Menuitem.Submenu" id="EditMenu">
-        <property name="label" translatable="yes">Edit</property>
+      <object class="tk.Menuitem.Submenu" id="HelpMenu">
+        <property name="label" translatable="yes">Help</property>
       </object>
     </child>
   </object>
