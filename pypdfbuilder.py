@@ -28,6 +28,7 @@ class BgTabManager:
         self.__bg_only_first_page = self.parent.builder.get_variable('bg_only_first_page')
         self.__bg_button_label = self.parent.builder.get_variable('bg_options_bg_button')
         self.__only_first_button_label = self.parent.builder.get_variable('bg_options_only_first_button')
+        self.__bg_command.set('BG')
 
     @property
     def parent(self):
@@ -70,6 +71,32 @@ class BgTabManager:
     def choose_bg_option(self):
         self.__only_first_button_label.set('Apply background to only the first page')
         self.__bg_button_label.set('Choose Background …')
+
+    def save_as(self):
+        save_filepath = self.parent.get_save_file(widget_title='Save New PDF to …')
+        if self.__source_filepath and self.__bg_filepath:
+            out_pdf = PdfFileWriter()
+            command = self.__bg_command.get()
+            for p in range(self.__source_pdf_pages):
+                # new PdfFileReader instances needed for every page merged. See here:
+                # https://github.com/mstamy2/PyPDF2/issues/100#issuecomment-43145634
+                source_pdf = PdfFileReader(open(self.__source_filepath, "rb"))
+                bg_pdf = PdfFileReader(open(self.__bg_filepath, "rb"))
+                bg_page = bg_pdf.getPage(0)
+                source_page = source_pdf.getPage(p)
+                back_page = None
+                front_page = None
+                if command == 'STAMP':
+                    front_page = bg_page
+                    back_page = source_page
+                elif command == 'BG':
+                    front_page = source_page
+                    back_page = bg_page
+                back_page.mergePage(front_page)
+                out_pdf.addPage(back_page)
+            with open(save_filepath, "wb") as out_pdf_stream:
+                out_pdf.write(out_pdf_stream)
+
 
 class SplitTabManager:
     def __init__(self, parent=None):
@@ -372,10 +399,10 @@ class PyPDFBuilderApplication:
         pass
 
     def bgtab_choose_source_file(self):
-        self.bgtab.choose_source()
+        self.bgtab.choose_source_file()
 
     def bgtab_choose_bg_file(self):
-        self.bgtab.choose_bg()
+        self.bgtab.choose_bg_file()
 
     def bgtab_save_as(self):
         self.bgtab.save_as()
