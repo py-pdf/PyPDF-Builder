@@ -361,7 +361,180 @@
                       <property name="column">0</property>
                       <property name="propagate">True</property>
                       <property name="row">0</property>
+                      <rows>
+                        <row id="0">
+                          <property name="weight">1</property>
+                        </row>
+                      </rows>
+                      <columns>
+                        <column id="0">
+                          <property name="weight">1</property>
+                        </column>
+                      </columns>
                     </layout>
+                    <child>
+                      <object class="ttk.Frame" id="BgOptionsFrame">
+                        <property name="height">200</property>
+                        <property name="width">200</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                          <rows>
+                            <row id="0">
+                              <property name="weight">0</property>
+                            </row>
+                          </rows>
+                          <columns>
+                            <column id="2">
+                              <property name="weight">0</property>
+                            </column>
+                          </columns>
+                        </layout>
+                        <child>
+                          <object class="ttk.Radiobutton" id="BgOptionsBackground">
+                            <property name="command">bgtab_choose_bg_option</property>
+                            <property name="text" translatable="yes">Background</property>
+                            <property name="value">BG</property>
+                            <property name="variable">string:bg_command</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="padx">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Radiobutton" id="BgOptionsStamp">
+                            <property name="command">bgtab_choose_stamp_option</property>
+                            <property name="text" translatable="yes">Stamp</property>
+                            <property name="value">STAMP</property>
+                            <property name="variable">string:bg_command</property>
+                            <layout>
+                              <property name="column">1</property>
+                              <property name="padx">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Radiobutton" id="BgOptionsNumber">
+                            <property name="command">bgtab_choose_number_option</property>
+                            <property name="state">disabled</property>
+                            <property name="text" translatable="yes">Number</property>
+                            <property name="value">NUMBER</property>
+                            <property name="variable">string:bg_command</property>
+                            <layout>
+                              <property name="column">2</property>
+                              <property name="padx">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Checkbutton" id="BgOnlyFirstButton">
+                            <property name="offvalue">False</property>
+                            <property name="onvalue">True</property>
+                            <property name="text" translatable="yes">Apply background to only the first page</property>
+                            <property name="textvariable">string:bg_options_only_first_button</property>
+                            <property name="variable">boolean:bg_only_first_page</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="columnspan">3</property>
+                              <property name="pady">20</property>
+                              <property name="propagate">True</property>
+                              <property name="row">1</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Button" id="BgOptionsSourcePDF">
+                            <property name="command">bgtab_choose_source_file</property>
+                            <property name="text" translatable="yes">Source PDF Document …</property>
+                            <property name="width">25</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="columnspan">3</property>
+                              <property name="propagate">True</property>
+                              <property name="row">2</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Label" id="BgSourceFileInfo">
+                            <property name="textvariable">string:source_file_info</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="columnspan">3</property>
+                              <property name="propagate">True</property>
+                              <property name="row">3</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Button" id="BgOptionsBackgroundPDF">
+                            <property name="command">bgtab_choose_bg_file</property>
+                            <property name="text" translatable="yes">Choose Background …</property>
+                            <property name="textvariable">string:bg_options_bg_button</property>
+                            <property name="width">25</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="columnspan">3</property>
+                              <property name="propagate">True</property>
+                              <property name="row">4</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Label" id="BgBgFileInfo">
+                            <property name="textvariable">string:bg_file_info</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="columnspan">3</property>
+                              <property name="propagate">True</property>
+                              <property name="row">5</property>
+                            </layout>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Frame" id="BgCommandFrame">
+                        <property name="padding">0 20</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">3</property>
+                        </layout>
+                        <child>
+                          <object class="ttk.Button" id="BgSaveButton">
+                            <property name="command">bgtab_save_as</property>
+                            <property name="text" translatable="yes">Save As …</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="padx">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="ttk.Button" id="BgExitButton">
+                            <property name="command">quit</property>
+                            <property name="text" translatable="yes">Exit</property>
+                            <layout>
+                              <property name="column">1</property>
+                              <property name="padx">10</property>
+                              <property name="propagate">True</property>
+                              <property name="row">0</property>
+                            </layout>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -606,10 +779,10 @@
         <property name="label" translatable="yes">File</property>
         <child>
           <object class="tk.Menuitem.Command" id="FileExit">
+            <property name="accelerator">Alt+F4</property>
             <property name="command">quit</property>
             <property name="command_id_arg">false</property>
             <property name="label" translatable="yes">Exit</property>
-            <property name="accelerator">Alt+F4</property>
           </object>
         </child>
       </object>
@@ -619,34 +792,34 @@
         <property name="label" translatable="yes">View</property>
         <child>
           <object class="tk.Menuitem.Command" id="ViewJoin">
+            <property name="accelerator">Strg+J</property>
             <property name="command">select_tab_join</property>
             <property name="command_id_arg">false</property>
             <property name="label" translatable="yes">Join Files</property>
-            <property name="accelerator">Strg+J</property>
           </object>
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="ViewSplit">
+            <property name="accelerator">Strg+S</property>
             <property name="command">select_tab_split</property>
             <property name="command_id_arg">false</property>
             <property name="label" translatable="yes">Split Files</property>
-            <property name="accelerator">Strg+S</property>
           </object>
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="ViewBg">
+            <property name="accelerator">Strg+B</property>
             <property name="command">select_tab_bg</property>
             <property name="command_id_arg">false</property>
             <property name="label" translatable="yes">Background/Stamp/Number</property>
-            <property name="accelerator">Strg+B</property>
           </object>
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="ViewRotate">
+            <property name="accelerator">Strg+R</property>
             <property name="command">select_tab_rotate</property>
             <property name="command_id_arg">false</property>
             <property name="label" translatable="yes">Rotate Pages</property>
-            <property name="accelerator">Strg+R</property>
           </object>
         </child>
         <child>
@@ -654,9 +827,9 @@
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="ViewProtection">
+            <property name="accelerator">Strg+P</property>
             <property name="command_id_arg">false</property>
             <property name="label" translatable="yes">Show Document Protection</property>
-            <property name="accelerator">Strg+P</property>
           </object>
         </child>
       </object>

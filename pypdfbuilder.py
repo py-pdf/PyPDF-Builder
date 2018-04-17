@@ -15,6 +15,62 @@ CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 USER_DIR = str(plPath.home())
 
 
+class BgTabManager:
+    def __init__(self, parent=None):
+        self.parent = parent
+        self.__source_filepath = None
+        self.__bg_filepath = None
+        self.__source_pdf_pages = None
+        self.__bg_pdf_pages = None
+        self.__source_file_info = self.parent.builder.get_variable('source_file_info')
+        self.__bg_file_info = self.parent.builder.get_variable('bg_file_info')
+        self.__bg_command = self.parent.builder.get_variable('bg_command')
+        self.__bg_only_first_page = self.parent.builder.get_variable('bg_only_first_page')
+        self.__bg_button_label = self.parent.builder.get_variable('bg_options_bg_button')
+        self.__only_first_button_label = self.parent.builder.get_variable('bg_options_only_first_button')
+
+    @property
+    def parent(self):
+        return self.__parent
+
+    @parent.setter
+    def parent(self, val):
+        self.__parent = val
+
+    def choose_source_file(self):
+        choose_source_file = self.parent.get_open_file(widget_title='Choose Source PDF …')
+        if choose_source_file:
+            self.__source_filepath = choose_source_file
+            with open(self.__source_filepath, 'rb') as in_pdf:
+                pdf_handler = PdfFileReader(in_pdf)
+                self.__source_pdf_pages = pdf_handler.getNumPages()
+            self.__show_source_file_info()
+
+    def choose_bg_file(self):
+        choose_bg_file = self.parent.get_open_file(widget_title='Choose Background PDF …')
+        if choose_bg_file:
+            self.__bg_filepath = choose_bg_file
+            with open(self.__bg_filepath, 'rb') as in_pdf:
+                pdf_handler = PdfFileReader(in_pdf)
+                self.__bg_pdf_pages = pdf_handler.getNumPages()
+            self.__show_bg_file_info()
+
+    def __show_source_file_info(self):
+        filename = os.path.basename(self.__source_filepath)
+        self.__source_file_info.set(f'{filename[0:35]}…({self.__source_pdf_pages} pages)')
+
+    def __show_bg_file_info(self):
+        filename = os.path.basename(self.__bg_filepath)
+        self.__bg_file_info.set(f'{filename[0:35]}…({self.__bg_pdf_pages} pages)')
+
+    def choose_stamp_option(self):
+        self.__only_first_button_label.set('Apply stamp to only the first page')
+        self.__bg_button_label.set('Choose Stamp …')
+
+    def choose_bg_option(self):
+        self.__only_first_button_label.set('Apply background to only the first page')
+        self.__bg_button_label.set('Choose Background …')
+
 class SplitTabManager:
     def __init__(self, parent=None):
         self.parent = parent
@@ -262,6 +318,7 @@ class PyPDFBuilderApplication:
 
         self.jointab = JoinTabManager(self)
         self.splittab = SplitTabManager(self)
+        self.bgtab = BgTabManager(self)
         self.rotatetab = RotateTabManager(self)
 
     # boy oh boy if there's anyway to do these callsbacks more elegantly, please let me gain that knowledge!
@@ -300,6 +357,28 @@ class PyPDFBuilderApplication:
 
     def splittab_save_as(self):
         self.splittab.save_as()
+
+    def bgtab_choose_bg_option(self):
+        self.bgtab.choose_bg_option()
+
+    def bgtab_choose_stamp_option(self):
+        self.bgtab.choose_stamp_option()
+
+    def bgtab_choose_number_option(self):
+        '''
+        Numbering pages is currently not supported by PyPDF2 so this option will remain
+        disabled for now
+        '''
+        pass
+
+    def bgtab_choose_source_file(self):
+        self.bgtab.choose_source()
+
+    def bgtab_choose_bg_file(self):
+        self.bgtab.choose_bg()
+
+    def bgtab_save_as(self):
+        self.bgtab.save_as()
 
     def rotatetab_open_file(self):
         self.rotatetab.open_file()
