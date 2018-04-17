@@ -5,9 +5,9 @@ from pathlib import Path as plPath
 from operator import itemgetter
 from settings import *
 
-# import tkinter as tk
 from tkinter import filedialog
 from pygubu import Builder as pgBuilder
+from pygubu.builder import ttkstdwidgets
 
 from PyPDF2 import PdfFileMerger, PdfFileReader, PdfFileWriter
 
