@@ -26,7 +26,7 @@ pygubu==0.9.8.2
 PyPDF2==1.26.0
 ```
 
-Python 3.6 was used in development... I haven't checked for compatibility with lower versions, so your mileage my vary with anything starting 3.5 on downward.
+Python 3.6 was used in development… I haven't checked for compatibility with lower versions, so your mileage my vary with anything starting 3.5 on downward.
 
 ## License
 
@@ -45,7 +45,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Write tests
 - [ ] Error checking user input
 - [ ] Error/Exception Handling
+- [ ] Failover to system PDF Tools (e.g. Poppler)
 - [ ] Stamp/Background/Number Tab
-- [ ] Rotate Pages
+- [X] Rotate Pages
+- [X] Menus
+- [ ] Persistent User Settings
 - [ ] Package via pyInstaller
 - [ ] Distribution via Releases on GitHub

@@ -31,7 +31,7 @@ class SplitTabManager:
         self.__parent = val
 
     def open_file(self):
-        choose_split_file = self.parent.get_open_file(widget_title='Choose PDF to Split...')
+        choose_split_file = self.parent.get_open_file(widget_title='Choose PDF to Split…')
         if choose_split_file:
             self.split_filepath = choose_split_file
             with open(self.split_filepath, 'rb') as in_pdf:
@@ -41,7 +41,7 @@ class SplitTabManager:
 
     def show_file_info(self):
         filename = os.path.basename(self.split_filepath)
-        self.split_file_info.set(f'{filename[0:35]}...({self.pdf_pages} pages)')
+        self.split_file_info.set(f'{filename[0:35]}…({self.pdf_pages} pages)')
 
     def save_as(self):
         if self.split_filepath:
@@ -87,7 +87,7 @@ class RotateTabManager:
         opens file dialog again and presses cancel. In this case, '' gets returned and would
         overwrite the old filepath
         '''
-        chose_rotate_file = self.parent.get_open_file(widget_title='Choose PDF to Rotate...')
+        chose_rotate_file = self.parent.get_open_file(widget_title='Choose PDF to Rotate…')
         if chose_rotate_file:
             self.rotate_filepath = chose_rotate_file
             with open(self.rotate_filepath, 'rb') as in_pdf:
@@ -102,11 +102,11 @@ class RotateTabManager:
 
     def show_file_info(self):
         filename = os.path.basename(self.rotate_filepath)
-        self.rotate_file_info.set(f'{filename[0:35]}...({self.pdf_pages} pages)')
+        self.rotate_file_info.set(f'{filename[0:35]}…({self.pdf_pages} pages)')
 
     def save_as(self):
         page_range = (self.rotate_from_page.get()-1, self.rotate_to_page.get())
-        save_filepath = self.parent.get_save_file(widget_title='Save New PDF to...')
+        save_filepath = self.parent.get_save_file(widget_title='Save New PDF to…')
         if self.rotate_filepath:
             in_pdf = PdfFileReader(open(self.rotate_filepath, "rb"))
             out_pdf = PdfFileWriter()
@@ -162,7 +162,7 @@ class JoinTabManager:
 
     def show_file_info(self):
         file_data = self.files_tree_widget.item(self.selected_files[0], 'values')
-        self.current_file_info.set(f'{file_data[PDF_FILENAME][0:25]}...({file_data[PDF_PAGES]} pages)')
+        self.current_file_info.set(f'{file_data[PDF_FILENAME][0:25]}…({file_data[PDF_PAGES]} pages)')
 
     def show_selected_pages(self):
         file_data = self.files_tree_widget.item(self.selected_files[0], 'values')
@@ -174,7 +174,7 @@ class JoinTabManager:
     def parse_page_select(self, page_select):
         '''
         As this method deals with raw user input, there will have to be a whole lot of error checking
-        built into this function at a later time. Really don't look forward to this... at all.
+        built into this function at a later time. Really don't look forward to this… at all.
         '''
         for page_range in page_select.replace(' ', '').split(','):
             if '-' in page_range:
@@ -184,9 +184,9 @@ class JoinTabManager:
                 yield tuple(sorted((int(page_range)-1, int(page_range))))
 
     def add_file(self):
-        add_filepaths = list(self.parent.get_open_files(widget_title='Choose PDFs to Add...'))
+        add_filepaths = self.parent.get_open_files(widget_title='Choose PDFs to Add…')
         if add_filepaths:
-            for filepath in add_filepaths:
+            for filepath in list(add_filepaths):
                 filename = os.path.basename(filepath)
                 with open(filepath, 'rb') as in_pdf:
                     pdf_handler = PdfFileReader(in_pdf)
@@ -196,7 +196,7 @@ class JoinTabManager:
 
     def save_as(self):
         if len(self.get_join_files()) > 0:
-            save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to...')
+            save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to…')
             if save_filepath:
                 merger = PdfFileMerger()
                 for f in self.get_join_files():
@@ -307,32 +307,35 @@ class PyPDFBuilderApplication:
     def rotatetab_save_as(self):
         self.rotatetab.save_as()
 
-    def get_open_files(self, widget_title='Open Files...'):
+    def get_open_files(self, widget_title='Open Files…'):
         f = filedialog.askopenfilenames(
             initialdir=self.__current_dir,
             title=widget_title,
             filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
         )
-        self.__current_dir = os.path.dirname(f[-1])
-        return f
+        if f:
+            self.__current_dir = os.path.dirname(f[-1])
+            return f
 
-    def get_open_file(self, widget_title='Open File...'):
+    def get_open_file(self, widget_title='Open File…'):
         f = filedialog.askopenfilename(
             initialdir=self.__current_dir,
             title=widget_title,
             filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
         )
-        self.__current_dir = os.path.dirname(f)
-        return f
+        if f:
+            self.__current_dir = os.path.dirname(f)
+            return f
 
-    def get_save_file(self, widget_title='Save File...'):
+    def get_save_file(self, widget_title='Save File…'):
         f = filedialog.asksaveasfilename(
             initialdir=self.__current_dir,
             title=widget_title,
             filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
         )
-        self.__current_dir = os.path.dirname(f)
-        return f
+        if f:
+            self.__current_dir = os.path.dirname(f)
+            return f
 
     def quit(self, event=None):
         self.mainwindow.quit()

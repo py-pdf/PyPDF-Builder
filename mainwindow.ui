@@ -150,7 +150,7 @@
                     <child>
                       <object class="ttk.Button" id="JoinAddButton">
                         <property name="command">jointab_add_file</property>
-                        <property name="text" translatable="yes">Add...</property>
+                        <property name="text" translatable="yes">Add…</property>
                         <layout>
                           <property name="column">0</property>
                           <property name="padx">5</property>
@@ -222,7 +222,7 @@
                         <child>
                           <object class="ttk.Button" id="JoinSaveButton">
                             <property name="command">jointab_save_as</property>
-                            <property name="text" translatable="yes">Save As...</property>
+                            <property name="text" translatable="yes">Save As…</property>
                             <layout>
                               <property name="column">0</property>
                               <property name="padx">10</property>
@@ -546,7 +546,7 @@
                         <child>
                           <object class="ttk.Button" id="RotateSaveButton">
                             <property name="command">rotatetab_save_as</property>
-                            <property name="text" translatable="yes">Save As...</property>
+                            <property name="text" translatable="yes">Save As…</property>
                             <layout>
                               <property name="column">0</property>
                               <property name="padx">10</property>
