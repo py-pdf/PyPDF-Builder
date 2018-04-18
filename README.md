@@ -23,10 +23,21 @@ PyPDF Builder is built on [Tkinter](https://docs.python.org/3/library/tk.html), 
 
 ```
 pygubu==0.9.8.2
+PyInstaller==3.3.1
 PyPDF2==1.26.0
+Sphinx==1.7.2
 ```
 
+... and a whole bunch of related dependencies (especially Sphinx is a doozy!).
+
 Python 3.6 was used in development… I haven't checked for compatibility with lower versions, so your mileage my vary with anything starting 3.5 on downward.
+
+
+## Deployment
+
+Distributable application for Windows, Linux and Mac OS using pyInstaller or similiar tool. This isn't all too clear yet.
+
+Long term: Inclusion in Debian repos for direct installation on end-user systems.
 
 ## License
 
@@ -41,7 +52,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [X] Join Tab Functionality
 - [X] Split Tab Functionality
 - [ ] Refactor to avoid code repetition in save, file info, etc methods
-- [ ] Documentation
+- [ ] User Documentation (mostly self-explanatory)
+- [ ] Developer Documentation
 - [ ] Write tests
 - [ ] Error checking user input
 - [ ] Error/Exception Handling

@@ -77,25 +77,26 @@ class BgTabManager:
         if self.__source_filepath and self.__bg_filepath:
             out_pdf = PdfFileWriter()
             command = self.__bg_command.get()
-            for p in range(self.__source_pdf_pages):
-                # new PdfFileReader instances needed for every page merged. See here:
-                # https://github.com/mstamy2/PyPDF2/issues/100#issuecomment-43145634
-                source_pdf = PdfFileReader(open(self.__source_filepath, "rb"))
-                bg_pdf = PdfFileReader(open(self.__bg_filepath, "rb"))
-                bg_page = bg_pdf.getPage(0)
-                source_page = source_pdf.getPage(p)
-                back_page = None
-                front_page = None
-                if command == 'STAMP':
-                    front_page = bg_page
-                    back_page = source_page
-                elif command == 'BG':
-                    front_page = source_page
-                    back_page = bg_page
-                back_page.mergePage(front_page)
-                out_pdf.addPage(back_page)
-            with open(save_filepath, "wb") as out_pdf_stream:
-                out_pdf.write(out_pdf_stream)
+            with open(self.__source_filepath, "rb") as source_pdf_stream, \
+                 open(self.__bg_filepath, "rb") as bg_pdf_stream:
+                for p in range(self.__source_pdf_pages):
+                    # new PdfFileReader instances needed for every page merged. See here:
+                    # https://github.com/mstamy2/PyPDF2/issues/100#issuecomment-43145634
+                    source_pdf = PdfFileReader(source_pdf_stream)
+                    bg_pdf = PdfFileReader(bg_pdf_stream)
+                    if not self.__bg_only_first_page.get() or (self.__bg_only_first_page.get() and p < 1):
+                        if command == 'STAMP':
+                            top_page = bg_pdf.getPage(0)
+                            bottom_page = source_pdf.getPage(p)
+                        elif command == 'BG':
+                            top_page = source_pdf.getPage(p)
+                            bottom_page = bg_pdf.getPage(0)
+                        bottom_page.mergePage(top_page)
+                    else:
+                        bottom_page = source_pdf.getPage(p)
+                    out_pdf.addPage(bottom_page)
+                with open(save_filepath, "wb") as out_pdf_stream:
+                    out_pdf.write(out_pdf_stream)
 
 
 class SplitTabManager:
