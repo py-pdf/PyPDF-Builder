@@ -15,15 +15,38 @@ CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 USER_DIR = str(plPath.home())
 
 
+class PDFInfo:
+    def __init__(self, filepath):
+        self.__filepath = filepath
+
+    @property
+    def pages(self):
+        with open(self.__filepath, 'rb') as in_pdf:
+            pdf_handler = PdfFileReader(in_pdf)
+            return pdf_handler.getNumPages()
+
+    def concat_filename(self, max_length=35):
+        basename = os.path.basename(self.__filepath)
+        concat_filename = f'{basename[0:35]}'
+        if len(basename) > max_length:
+            concat_filename += '…'
+        return concat_filename
+
+    def pdf_info_string(self, concat_length=35):
+        concat_filename = self.concat_filename(max_length=concat_length)
+        return f'{concat_filename} ({self.pages} pages)'
+
+
 class BgTabManager:
     def __init__(self, parent=None):
         self.parent = parent
         self.__source_filepath = None
         self.__bg_filepath = None
-        self.__source_pdf_pages = None
+        self.__source_file_info = None
+        self.__bg_file_info = None
         self.__bg_pdf_pages = None
-        self.__source_file_info = self.parent.builder.get_variable('source_file_info')
-        self.__bg_file_info = self.parent.builder.get_variable('bg_file_info')
+        self.__source_file_info_widget = self.parent.builder.get_variable('source_file_info')
+        self.__bg_file_info_widget = self.parent.builder.get_variable('bg_file_info')
         self.__bg_command = self.parent.builder.get_variable('bg_command')
         self.__bg_only_first_page = self.parent.builder.get_variable('bg_only_first_page')
         self.__bg_button_label = self.parent.builder.get_variable('bg_options_bg_button')
@@ -39,30 +62,24 @@ class BgTabManager:
         self.__parent = val
 
     def choose_source_file(self):
-        choose_source_file = self.parent.get_open_file(widget_title='Choose Source PDF …')
+        choose_source_file = self.parent.get_file_dialog(func=filedialog.askopenfilename, widget_title='Choose Source PDF …')
         if choose_source_file:
             self.__source_filepath = choose_source_file
-            with open(self.__source_filepath, 'rb') as in_pdf:
-                pdf_handler = PdfFileReader(in_pdf)
-                self.__source_pdf_pages = pdf_handler.getNumPages()
+            self.__source_file_info = PDFInfo(self.__source_filepath)
             self.__show_source_file_info()
 
     def choose_bg_file(self):
-        choose_bg_file = self.parent.get_open_file(widget_title='Choose Background PDF …')
+        choose_bg_file = self.parent.get_file_dialog(func=filedialog.askopenfilename, widget_title='Choose Background PDF …')
         if choose_bg_file:
             self.__bg_filepath = choose_bg_file
-            with open(self.__bg_filepath, 'rb') as in_pdf:
-                pdf_handler = PdfFileReader(in_pdf)
-                self.__bg_pdf_pages = pdf_handler.getNumPages()
+            self.__bg_file_info = PDFInfo(self.__bg_filepath)
             self.__show_bg_file_info()
 
     def __show_source_file_info(self):
-        filename = os.path.basename(self.__source_filepath)
-        self.__source_file_info.set(f'{filename[0:35]}…({self.__source_pdf_pages} pages)')
+        self.__source_file_info_widget.set(self.__source_file_info.pdf_info_string(concat_length=80))
 
     def __show_bg_file_info(self):
-        filename = os.path.basename(self.__bg_filepath)
-        self.__bg_file_info.set(f'{filename[0:35]}…({self.__bg_pdf_pages} pages)')
+        self.__bg_file_info_widget.set(self.__bg_file_info.pdf_info_string(concat_length=80))
 
     def choose_stamp_option(self):
         self.__only_first_button_label.set('Apply stamp to only the first page')
@@ -73,13 +90,13 @@ class BgTabManager:
         self.__bg_button_label.set('Choose Background …')
 
     def save_as(self):
-        save_filepath = self.parent.get_save_file(widget_title='Save New PDF to …')
+        save_filepath = self.parent.get_file_dialog(func=filedialog.asksaveasfilename, widget_title='Save New PDF to …')
         if self.__source_filepath and self.__bg_filepath:
             out_pdf = PdfFileWriter()
             command = self.__bg_command.get()
             with open(self.__source_filepath, "rb") as source_pdf_stream, \
                  open(self.__bg_filepath, "rb") as bg_pdf_stream:
-                for p in range(self.__source_pdf_pages):
+                for p in range(self.__source_file_info.pages):
                     # new PdfFileReader instances needed for every page merged. See here:
                     # https://github.com/mstamy2/PyPDF2/issues/100#issuecomment-43145634
                     source_pdf = PdfFileReader(source_pdf_stream)
@@ -102,9 +119,9 @@ class BgTabManager:
 class SplitTabManager:
     def __init__(self, parent=None):
         self.parent = parent
-        self.split_filepath = None
-        self.pdf_pages = None
-        self.split_file_info = self.parent.builder.get_variable('split_file_info')
+        self.__split_filepath = None
+        self.__split_file_info = None
+        self.__split_file_info_widget = self.parent.builder.get_variable('split_file_info')
 
     @property
     def parent(self):
@@ -115,26 +132,23 @@ class SplitTabManager:
         self.__parent = val
 
     def open_file(self):
-        choose_split_file = self.parent.get_open_file(widget_title='Choose PDF to Split…')
+        choose_split_file = self.parent.get_file_dialog(func=filedialog.askopenfilename, widget_title='Choose PDF to Split…')
         if choose_split_file:
-            self.split_filepath = choose_split_file
-            with open(self.split_filepath, 'rb') as in_pdf:
-                pdf_handler = PdfFileReader(in_pdf)
-                self.pdf_pages = pdf_handler.getNumPages()
-            self.show_file_info()
+            self.__split_filepath = choose_split_file
+            self.__split_file_info = PDFInfo(self.__split_filepath)
+            self.__show_file_info()
 
-    def show_file_info(self):
-        filename = os.path.basename(self.split_filepath)
-        self.split_file_info.set(f'{filename[0:35]}…({self.pdf_pages} pages)')
+    def __show_file_info(self):
+        self.__split_file_info_widget.set(self.__split_file_info.pdf_info_string())
 
     def save_as(self):
-        if self.split_filepath:
-            basepath = os.path.splitext(self.split_filepath)[0]
+        if self.__split_filepath:
+            basepath = os.path.splitext(self.__split_filepath)[0]
             # in spite of discussion here https://stackoverflow.com/a/2189814
             # we'll just go the lazy way to count the number of needed digits:
-            num_length = len(str(abs(self.pdf_pages)))
-            in_pdf = PdfFileReader(open(self.split_filepath, "rb"))
-            for p in range(self.pdf_pages):
+            num_length = len(str(abs(self.__split_file_info.pages)))
+            in_pdf = PdfFileReader(open(self.__split_filepath, "rb"))
+            for p in range(self.__split_file_info.pages):
                 output_path = f"{basepath}_{str(p+1).rjust(num_length, '0')}.pdf"
                 out_pdf = PdfFileWriter()
                 out_pdf.addPage(in_pdf.getPage(p))
@@ -145,17 +159,17 @@ class SplitTabManager:
 class RotateTabManager:
     def __init__(self, parent=None):
         self.parent = parent
-        self.rotate_filepath = None
-        self.pdf_pages = None
-        self.rotate_file_info = self.parent.builder.get_variable('rotate_file_info')
-        self.rotate_from_page = self.parent.builder.get_variable('rotate_from_page')
-        self.rotate_to_page = self.parent.builder.get_variable('rotate_to_page')
-        self.rotate_amount = self.parent.builder.get_variable('rotate_amount')
+        self.__rotate_filepath = None
+        self.__rotate_file_info = None
+        self.__rotate_file_info_widget = self.parent.builder.get_variable('rotate_file_info')
+        self.__rotate_from_page_widget = self.parent.builder.get_variable('rotate_from_page')
+        self.__rotate_to_page_widget = self.parent.builder.get_variable('rotate_to_page')
+        self.__rotate_amount_widget = self.parent.builder.get_variable('rotate_amount')
         # Set default values. No idea how to avoid this using only the UI file, so I'm
         # breaking the MVC principle here.
-        self.rotate_amount.set(None)
-        self.rotate_from_page.set('')
-        self.rotate_to_page.set('')
+        self.__rotate_amount_widget.set(None)
+        self.__rotate_from_page_widget.set('')
+        self.__rotate_to_page_widget.set('')
 
     @property
     def parent(self):
@@ -166,37 +180,29 @@ class RotateTabManager:
         self.__parent = val
 
     def open_file(self):
-        '''
-        Use interim variable for path in case there was a file already selected, then user
-        opens file dialog again and presses cancel. In this case, '' gets returned and would
-        overwrite the old filepath
-        '''
-        chose_rotate_file = self.parent.get_open_file(widget_title='Choose PDF to Rotate…')
+        chose_rotate_file = self.parent.get_file_dialog(func=filedialog.askopenfilename, widget_title='Choose PDF to Rotate…')
         if chose_rotate_file:
-            self.rotate_filepath = chose_rotate_file
-            with open(self.rotate_filepath, 'rb') as in_pdf:
-                pdf_handler = PdfFileReader(in_pdf)
-                self.pdf_pages = pdf_handler.getNumPages()
-            self.show_file_info()
-            self.show_rotate_pages()
+            self.__rotate_filepath = chose_rotate_file
+            self.__rotate_file_info = PDFInfo(self.__rotate_filepath)
+            self.__show_file_info()
+            self.__show_rotate_pages()
 
-    def show_rotate_pages(self):
-        self.rotate_from_page.set(1)
-        self.rotate_to_page.set(self.pdf_pages)
+    def __show_rotate_pages(self):
+        self.__rotate_from_page_widget.set(1)
+        self.__rotate_to_page_widget.set(self.__rotate_file_info.pages)
 
-    def show_file_info(self):
-        filename = os.path.basename(self.rotate_filepath)
-        self.rotate_file_info.set(f'{filename[0:35]}…({self.pdf_pages} pages)')
+    def __show_file_info(self):
+        self.__rotate_file_info_widget.set(self.__rotate_file_info.pdf_info_string())
 
     def save_as(self):
-        page_range = (self.rotate_from_page.get()-1, self.rotate_to_page.get())
-        save_filepath = self.parent.get_save_file(widget_title='Save New PDF to…')
-        if self.rotate_filepath:
-            in_pdf = PdfFileReader(open(self.rotate_filepath, "rb"))
+        page_range = (self.__rotate_from_page_widget.get()-1, self.__rotate_to_page_widget.get())
+        save_filepath = self.parent.get_file_dialog(func=filedialog.asksaveasfilename, widget_title='Save New PDF to…')
+        if self.__rotate_filepath:
+            in_pdf = PdfFileReader(open(self.__rotate_filepath, "rb"))
             out_pdf = PdfFileWriter()
-            for p in range(self.pdf_pages):
+            for p in range(self.__rotate_file_info.pages):
                 if p in range(*page_range):
-                    out_pdf.addPage(in_pdf.getPage(p).rotateClockwise(ROTATE_DEGREES[self.rotate_amount.get()]))
+                    out_pdf.addPage(in_pdf.getPage(p).rotateClockwise(ROTATE_DEGREES[self.__rotate_amount_widget.get()]))
                 else:
                     out_pdf.addPage(in_pdf.getPage(p))
             with open(save_filepath, "wb") as out_pdf_stream:
@@ -206,11 +212,12 @@ class RotateTabManager:
 class JoinTabManager:
     def __init__(self, parent=None):
         self.parent = parent
-        self.files_tree_widget = self.parent.builder.get_object('JoinFilesList')
-        self.files_tree_widget['displaycolumns'] = ('FileNameColumn', 'PageSelectColumn')
-        self.current_file_info = self.parent.builder.get_variable('current_file_info')
-        self.page_select_input = self.parent.builder.get_variable('page_select_input')
-        self.selected_files = []
+        self.__current_file_info = None
+        self.__files_tree_widget = self.parent.builder.get_object('JoinFilesList')
+        self.__files_tree_widget['displaycolumns'] = ('FileNameColumn', 'PageSelectColumn')
+        self.__current_file_info_widget = self.parent.builder.get_variable('current_file_info')
+        self.__page_select_input_widget = self.parent.builder.get_variable('page_select_input')
+        self.__selected_files = []
 
     @property
     def parent(self):
@@ -220,42 +227,35 @@ class JoinTabManager:
     def parent(self, val):
         self.__parent = val
 
-    @property
-    def selected_files(self):
-        return self.__selected_files
-
-    @selected_files.setter
-    def selected_files(self, val):
-        self.__selected_files = val
-
     def on_file_select(self, event):
-        self.selected_files = self.files_tree_widget.selection()
-        self.show_file_info()
-        self.show_selected_pages()
+        self.__selected_files = self.__files_tree_widget.selection()
+        self.__current_file_info = PDFInfo(
+            self.__files_tree_widget.item(self.__selected_files[0], 'values')[PDF_FILEPATH])
+        self.__show_file_info()
+        self.__show_selected_pages()
 
     def enter_page_selection(self, event):
         '''
         This medthod is called when the page selection input field loses focus
         i.e. when input is completed
         '''
-        for f in self.selected_files:
-            file_data = self.files_tree_widget.item(f, 'values')
-            page_select = self.page_select_input.get()
+        for f in self.__selected_files:
+            file_data = self.__files_tree_widget.item(f, 'values')
+            page_select = self.__page_select_input_widget.get()
             new_tuple = (file_data[PDF_FILENAME], page_select, file_data[PDF_FILEPATH], file_data[PDF_PAGES])
-            self.files_tree_widget.item(f, values=new_tuple)
+            self.__files_tree_widget.item(f, values=new_tuple)
 
-    def show_file_info(self):
-        file_data = self.files_tree_widget.item(self.selected_files[0], 'values')
-        self.current_file_info.set(f'{file_data[PDF_FILENAME][0:25]}…({file_data[PDF_PAGES]} pages)')
+    def __show_file_info(self):
+        self.__current_file_info_widget.set(self.__current_file_info.pdf_info_string(concat_length=25))
 
-    def show_selected_pages(self):
-        file_data = self.files_tree_widget.item(self.selected_files[0], 'values')
-        self.page_select_input.set(file_data[PDF_PAGESELECT])
+    def __show_selected_pages(self):
+        file_data = self.__files_tree_widget.item(self.__selected_files[0], 'values')
+        self.__page_select_input_widget.set(file_data[PDF_PAGESELECT])
 
-    def get_join_files(self):
-        return [self.files_tree_widget.item(i)['values'] for i in self.files_tree_widget.get_children()]
+    def __get_join_files(self):
+        return [self.__files_tree_widget.item(i)['values'] for i in self.__files_tree_widget.get_children()]
 
-    def parse_page_select(self, page_select):
+    def __parse_page_select(self, page_select):
         '''
         As this method deals with raw user input, there will have to be a whole lot of error checking
         built into this function at a later time. Really don't look forward to this… at all.
@@ -268,55 +268,56 @@ class JoinTabManager:
                 yield tuple(sorted((int(page_range)-1, int(page_range))))
 
     def add_file(self):
-        add_filepaths = self.parent.get_open_files(widget_title='Choose PDFs to Add…')
+        add_filepaths = self.parent.get_file_dialog(
+            func=filedialog.askopenfilenames,
+            widget_title='Choose PDFs to Add…'
+        )
         if add_filepaths:
             for filepath in list(add_filepaths):
                 filename = os.path.basename(filepath)
-                with open(filepath, 'rb') as in_pdf:
-                    pdf_handler = PdfFileReader(in_pdf)
-                    pages = pdf_handler.getNumPages()
-                file_data = (filename, '', filepath, pages)
-                self.files_tree_widget.insert('', 'end', values=file_data)
+                file_info = PDFInfo(filepath)
+                file_data = (filename, '', filepath, file_info.pages)
+                self.__files_tree_widget.insert('', 'end', values=file_data)
 
     def save_as(self):
-        if len(self.get_join_files()) > 0:
-            save_filepath = self.parent.get_save_file(widget_title='Save Joined PDF to…')
+        if len(self.__get_join_files()) > 0:
+            save_filepath = self.parent.get_file_dialog(func=filedialog.asksaveasfilename, widget_title='Save Joined PDF to…')
             if save_filepath:
                 merger = PdfFileMerger()
-                for f in self.get_join_files():
+                for f in self.__get_join_files():
                     if not f[PDF_PAGESELECT]:
                         merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'))
                     else:
-                        for page_range in self.parse_page_select(str(f[PDF_PAGESELECT])):
+                        for page_range in self.__parse_page_select(str(f[PDF_PAGESELECT])):
                             merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'), pages=page_range)
                 with open(save_filepath, 'wb') as out_pdf:
                     merger.write(out_pdf)
 
     def move_up(self):
-        selected_files = self.selected_files
-        first_idx = self.files_tree_widget.index(selected_files[0])
-        parent = self.files_tree_widget.parent(selected_files[0])
+        selected_files = self.__selected_files
+        first_idx = self.__files_tree_widget.index(selected_files[0])
+        parent = self.__files_tree_widget.parent(selected_files[0])
         if first_idx > 0:
             for f in selected_files:
-                swap_item = self.files_tree_widget.prev(f)
-                new_idx = self.files_tree_widget.index(swap_item)
-                self.files_tree_widget.move(f, parent, new_idx)
+                swap_item = self.__files_tree_widget.prev(f)
+                new_idx = self.__files_tree_widget.index(swap_item)
+                self.__files_tree_widget.move(f, parent, new_idx)
 
     def move_down(self):
-        selected_files = list(reversed(self.selected_files))
-        last_idx = self.files_tree_widget.index(selected_files[0])
-        parent = self.files_tree_widget.parent(selected_files[0])
-        last_idx_in_widget =  self.files_tree_widget.index(self.files_tree_widget.get_children()[-1])
+        selected_files = list(reversed(self.__selected_files))
+        last_idx = self.__files_tree_widget.index(selected_files[0])
+        parent = self.__files_tree_widget.parent(selected_files[0])
+        last_idx_in_widget =  self.__files_tree_widget.index(self.__files_tree_widget.get_children()[-1])
         if last_idx < last_idx_in_widget:
             for f in selected_files:
-                swap_item = self.files_tree_widget.next(f)
-                own_idx = self.files_tree_widget.index(f)
-                new_idx = self.files_tree_widget.index(swap_item)
-                self.files_tree_widget.move(f, parent, new_idx)
+                swap_item = self.__files_tree_widget.next(f)
+                own_idx = self.__files_tree_widget.index(f)
+                new_idx = self.__files_tree_widget.index(swap_item)
+                self.__files_tree_widget.move(f, parent, new_idx)
 
     def remove_file(self):
-        for f in self.selected_files:
-            self.files_tree_widget.detach(f)
+        for f in self.__selected_files:
+            self.__files_tree_widget.detach(f)
 
 
 class PyPDFBuilderApplication:
@@ -414,34 +415,17 @@ class PyPDFBuilderApplication:
     def rotatetab_save_as(self):
         self.rotatetab.save_as()
 
-    def get_open_files(self, widget_title='Open Files…'):
-        f = filedialog.askopenfilenames(
+    def get_file_dialog(self, func, widget_title='Choose File(s) …'):
+        f = func(
             initialdir=self.__current_dir,
             title=widget_title,
             filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
         )
         if f:
-            self.__current_dir = os.path.dirname(f[-1])
-            return f
-
-    def get_open_file(self, widget_title='Open File…'):
-        f = filedialog.askopenfilename(
-            initialdir=self.__current_dir,
-            title=widget_title,
-            filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
-        )
-        if f:
-            self.__current_dir = os.path.dirname(f)
-            return f
-
-    def get_save_file(self, widget_title='Save File…'):
-        f = filedialog.asksaveasfilename(
-            initialdir=self.__current_dir,
-            title=widget_title,
-            filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
-        )
-        if f:
-            self.__current_dir = os.path.dirname(f)
+            if type(f) == list:
+                self.__current_dir = os.path.dirname(f[-1])
+            elif type(f) == str:
+                self.__current_dir = os.path.dirname(f)
             return f
 
     def quit(self, event=None):
