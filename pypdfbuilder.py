@@ -16,16 +16,34 @@ USER_DIR = str(plPath.home())
 
 
 class PDFInfo:
+    '''File info class for PDF files.
+
+    Instances of this class show information about PDF files that are being edited in
+    PyPDF Builder.
+
+    Args:
+        filepath (str): Path to PDF File
+    '''
     def __init__(self, filepath):
         self.__filepath = filepath
 
     @property
     def pages(self):
+        '''int: Number of pages contained in PDF file'''
         with open(self.__filepath, 'rb') as in_pdf:
             pdf_handler = PdfFileReader(in_pdf)
             return pdf_handler.getNumPages()
 
     def concat_filename(self, max_length=35):
+        '''Concatenate a filename to a certain length.
+
+        Args:
+            max_length (int): Maximum length of concatenated string (default: 35)
+
+        Returns:
+            str: Filename of PDFInfo-object concatenated to max length of `max_length`
+
+        '''
         basename = os.path.basename(self.__filepath)
         concat_filename = f'{basename[0:35]}'
         if len(basename) > max_length:
@@ -33,6 +51,15 @@ class PDFInfo:
         return concat_filename
 
     def pdf_info_string(self, concat_length=35):
+        '''Fetch a standard info-string about the PDFInfo-object.
+
+        Args:
+            concat_length (int): Maximum length of concatenated filename string (default: 35)
+
+        Returns:
+            str: Information in the format `Filename (pages)` of PDFInfo-object
+
+        '''
         concat_filename = self.concat_filename(max_length=concat_length)
         return f'{concat_filename} ({self.pages} pages)'
 
@@ -117,6 +144,13 @@ class BgTabManager:
 
 
 class SplitTabManager:
+    '''Manager class for the Split Tab
+
+    The instance of this class manages all aspects of the split tab in the program.
+
+    Args:
+        parent (PyPDFBuilderApplication): Application that created the instance and that contains the Split Tab.
+    '''
     def __init__(self, parent=None):
         self.parent = parent
         self.__split_filepath = None
@@ -125,6 +159,7 @@ class SplitTabManager:
 
     @property
     def parent(self):
+        '''PyPDFBuilderApplication: Application that created the instance and that contains the Split Tab.'''
         return self.__parent
 
     @parent.setter
