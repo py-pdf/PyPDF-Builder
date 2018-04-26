@@ -51,16 +51,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [X] Join Tab Functionality
 - [X] Split Tab Functionality
-- [ ] Refactor to avoid code repetition in save, file info, etc methods
+- [X] Refactor to avoid code repetition in save, file info, etc methods
 - [ ] User Documentation (mostly self-explanatory)
 - [ ] Developer Documentation
 - [ ] Write tests
 - [ ] Error checking user input
 - [ ] Error/Exception Handling
 - [ ] Failover to system PDF Tools (e.g. Poppler)
-- [ ] Stamp/Background/Number Tab
+- [X] Stamp/Background/Number Tab
 - [X] Rotate Pages
 - [X] Menus
-- [ ] Persistent User Settings
+- [X] Persistent User Settings
 - [ ] Package via pyInstaller
 - [ ] Distribution via Releases on GitHub

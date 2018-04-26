@@ -97,9 +97,10 @@ class UserData:
             print('Something went horribly wrong while trying to save your current user data.')
 
     def save_success(self):
+        '''Gets called when a PDF file was processed successfully. Currently only
+        increases the `number_of_processed_files´-counter by 1
+        '''
         self.number_of_processed_files += 1
-
-
 
 
 class PDFInfo:
@@ -111,6 +112,7 @@ class PDFInfo:
     Args:
         filepath (str): Path to PDF File
     '''
+
     def __init__(self, filepath):
         self.__filepath = filepath
 
@@ -176,14 +178,16 @@ class BgTabManager:
         self.__parent = val
 
     def choose_source_file(self):
-        choose_source_file = self.parent.get_file_dialog(func=filedialog.askopenfilename, widget_title='Choose Source PDF …')
+        choose_source_file = self.parent.get_file_dialog(
+            func=filedialog.askopenfilename, widget_title='Choose Source PDF …')
         if choose_source_file:
             self.__source_filepath = choose_source_file
             self.__source_file_info = PDFInfo(self.__source_filepath)
             self.__show_source_file_info()
 
     def choose_bg_file(self):
-        choose_bg_file = self.parent.get_file_dialog(func=filedialog.askopenfilename, widget_title='Choose Background PDF …')
+        choose_bg_file = self.parent.get_file_dialog(
+            func=filedialog.askopenfilename, widget_title='Choose Background PDF …')
         if choose_bg_file:
             self.__bg_filepath = choose_bg_file
             self.__bg_file_info = PDFInfo(self.__bg_filepath)
@@ -209,7 +213,7 @@ class BgTabManager:
             out_pdf = PdfFileWriter()
             command = self.__bg_command.get()
             with open(self.__source_filepath, "rb") as source_pdf_stream, \
-                 open(self.__bg_filepath, "rb") as bg_pdf_stream:
+                    open(self.__bg_filepath, "rb") as bg_pdf_stream:
                 for p in range(self.__source_file_info.pages):
                     # new PdfFileReader instances needed for every page merged. See here:
                     # https://github.com/mstamy2/PyPDF2/issues/100#issuecomment-43145634
@@ -239,6 +243,7 @@ class SplitTabManager:
     Args:
         parent (PyPDFBuilderApplication): Application that created the instance and that contains the Split Tab.
     '''
+
     def __init__(self, parent=None):
         self.parent = parent
         self.__split_filepath = None
@@ -255,7 +260,8 @@ class SplitTabManager:
         self.__parent = val
 
     def open_file(self):
-        choose_split_file = self.parent.get_file_dialog(func=filedialog.askopenfilename, widget_title='Choose PDF to Split…')
+        choose_split_file = self.parent.get_file_dialog(
+            func=filedialog.askopenfilename, widget_title='Choose PDF to Split…')
         if choose_split_file:
             self.__split_filepath = choose_split_file
             self.__split_file_info = PDFInfo(self.__split_filepath)
@@ -304,7 +310,8 @@ class RotateTabManager:
         self.__parent = val
 
     def open_file(self):
-        chose_rotate_file = self.parent.get_file_dialog(func=filedialog.askopenfilename, widget_title='Choose PDF to Rotate…')
+        chose_rotate_file = self.parent.get_file_dialog(
+            func=filedialog.askopenfilename, widget_title='Choose PDF to Rotate…')
         if chose_rotate_file:
             self.__rotate_filepath = chose_rotate_file
             self.__rotate_file_info = PDFInfo(self.__rotate_filepath)
@@ -326,7 +333,8 @@ class RotateTabManager:
             out_pdf = PdfFileWriter()
             for p in range(self.__rotate_file_info.pages):
                 if p in range(*page_range):
-                    out_pdf.addPage(in_pdf.getPage(p).rotateClockwise(ROTATE_DEGREES[self.__rotate_amount_widget.get()]))
+                    out_pdf.addPage(in_pdf.getPage(p).rotateClockwise(
+                        ROTATE_DEGREES[self.__rotate_amount_widget.get()]))
                 else:
                     out_pdf.addPage(in_pdf.getPage(p))
             with open(save_filepath, "wb") as out_pdf_stream:
@@ -406,7 +414,8 @@ class JoinTabManager:
 
     def save_as(self):
         if len(self.__get_join_files()) > 0:
-            save_filepath = self.parent.get_file_dialog(func=filedialog.asksaveasfilename, widget_title='Save Joined PDF to…')
+            save_filepath = self.parent.get_file_dialog(
+                func=filedialog.asksaveasfilename, widget_title='Save Joined PDF to…')
             if save_filepath:
                 merger = PdfFileMerger()
                 for f in self.__get_join_files():
@@ -433,7 +442,7 @@ class JoinTabManager:
         selected_files = list(reversed(self.__selected_files))
         last_idx = self.__files_tree_widget.index(selected_files[0])
         parent = self.__files_tree_widget.parent(selected_files[0])
-        last_idx_in_widget =  self.__files_tree_widget.index(self.__files_tree_widget.get_children()[-1])
+        last_idx_in_widget = self.__files_tree_widget.index(self.__files_tree_widget.get_children()[-1])
         if last_idx < last_idx_in_widget:
             for f in selected_files:
                 swap_item = self.__files_tree_widget.next(f)
@@ -478,10 +487,13 @@ class PyPDFBuilderApplication:
     # boy oh boy if there's anyway to do these callsbacks more elegantly, please let me gain that knowledge!
     def select_tab_join(self, *args, **kwargs):
         self.notebook.select(self.tabs['join'])
+
     def select_tab_split(self, *args, **kwargs):
         self.notebook.select(self.tabs['split'])
+
     def select_tab_bg(self, *args, **kwargs):
         self.notebook.select(self.tabs['bg'])
+
     def select_tab_rotate(self, *args, **kwargs):
         self.notebook.select(self.tabs['rotate'])
 
