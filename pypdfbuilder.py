@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import os
+import appdirs
+import json
 from pathlib import Path as plPath
 from operator import itemgetter
 from settings import *
@@ -11,8 +13,57 @@ from pygubu.builder import ttkstdwidgets
 
 from PyPDF2 import PdfFileMerger, PdfFileReader, PdfFileWriter
 
+APPNAME = 'pypdfbuilder'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 USER_DIR = str(plPath.home())
+CONFIG_DIR = appdirs.user_config_dir(APPNAME)
+DATA_DIR = appdirs.user_data_dir(APPNAME)
+
+
+class UserData:
+    '''Class for storing current user's application data'''
+
+    def __init__(self):
+        self.__user_data = {}
+        self.__user_data_path = os.path.join(DATA_DIR, 'data.json')
+
+    @property
+    def filedialog_path(self):
+        '''The last directory the user visited while opening or saving a file
+        using a Tk File Dialog.
+
+        The getter will first try to return the value stored in the state of the
+        instance, then try to read it out of the user data file, and if all else fails,
+        set it to the user's home directory and return that value.
+
+        The setter will set the according class instance property and save that property to
+        a user data file. If no such file exists yet, one will be created.
+        '''
+        return self.__user_data.get('filedialog_path') or self.__get_user_data()['filedialog_path']
+
+    @filedialog_path.setter
+    def filedialog_path(self, val):
+        self.__user_data['filedialog_path'] = val
+        self.__save_user_data()
+
+    def __get_user_data(self):
+        try:
+            with (open(self.__user_data_path, 'r')) as datafile:
+                self.__user_data = json.load(datafile)
+        except FileNotFoundError:
+            self.filedialog_path=USER_DIR
+        return self.__user_data
+
+    def __save_user_data(self):
+        if not os.path.exists(os.path.dirname(self.__user_data_path)):
+            plPath(os.path.dirname(self.__user_data_path)).mkdir(parents=True, exist_ok=True)
+        try:
+            with (open(self.__user_data_path, 'w')) as datafile:
+                json.dump(self.__user_data, datafile)
+        except FileNotFoundError:
+            print('Something went horribly wrong while trying to save your current user data.')
+
+
 
 
 class PDFInfo:
@@ -146,7 +197,7 @@ class BgTabManager:
 class SplitTabManager:
     '''Manager class for the Split Tab
 
-    The instance of this class manages all aspects of the split tab in the program.
+    An instance of this class manages all aspects of the Split Tab in the calling `PyPDFBuilderApplication` instance
 
     Args:
         parent (PyPDFBuilderApplication): Application that created the instance and that contains the Split Tab.
@@ -377,8 +428,7 @@ class PyPDFBuilderApplication:
 
         self.builder.connect_callbacks(self)
 
-        # Todo get pickled data: last directory visited by user
-        self.__current_dir = USER_DIR
+        self.__user_data = UserData()
 
         self.jointab = JoinTabManager(self)
         self.splittab = SplitTabManager(self)
@@ -452,15 +502,15 @@ class PyPDFBuilderApplication:
 
     def get_file_dialog(self, func, widget_title='Choose File(s) …'):
         f = func(
-            initialdir=self.__current_dir,
+            initialdir=self.__user_data.filedialog_path,
             title=widget_title,
             filetypes=(("PDF File", "*.pdf"), ("All Files", "*.*"))
         )
         if f:
-            if type(f) == list:
-                self.__current_dir = os.path.dirname(f[-1])
+            if type(f) == list or type(f) == tuple:
+                self.__user_data.filedialog_path = os.path.dirname(f[-1])
             elif type(f) == str:
-                self.__current_dir = os.path.dirname(f)
+                self.__user_data.filedialog_path = os.path.dirname(f)
             return f
 
     def quit(self, event=None):
