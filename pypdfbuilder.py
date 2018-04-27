@@ -20,6 +20,12 @@ CONFIG_DIR = appdirs.user_config_dir(APPNAME)
 DATA_DIR = appdirs.user_data_dir(APPNAME)
 
 
+class SettingsData:
+    '''Class for managing current user's application settings'''
+
+    def __init__(self):
+        pass
+
 class UserData:
     '''Class for storing current user's application data'''
 
@@ -460,7 +466,8 @@ class PyPDFBuilderApplication:
         self.builder = pgBuilder()
         self.builder.add_from_file(os.path.join(CURRENT_DIR, 'mainwindow.ui'))
 
-        self.mainwindow = self.builder.get_object('mainwindow')
+        self.mainwindow = self.builder.get_object('MainWindow')
+        self.settings_dialog = self.builder.get_object('SettingsDialog', self.mainwindow)
         self.notebook = self.builder.get_object('AppNotebook')
         self.tabs = {
             'join': self.builder.get_object('JoinFrame'),
@@ -468,16 +475,14 @@ class PyPDFBuilderApplication:
             'bg': self.builder.get_object('BgFrame'),
             'rotate': self.builder.get_object('RotateFrame'),
         }
-        self.mainwindow.bind_all('<Control-j>', self.select_tab_join)
-        self.mainwindow.bind_all('<Control-s>', self.select_tab_split)
-        self.mainwindow.bind_all('<Control-b>', self.select_tab_bg)
-        self.mainwindow.bind_all('<Control-r>', self.select_tab_rotate)
+
         self.mainmenu = self.builder.get_object('MainMenu')
         self.mainwindow.config(menu=self.mainmenu)
 
         self.builder.connect_callbacks(self)
 
         self.user_data = UserData()
+        self.settings_data = SettingsData()
 
         self.jointab = JoinTabManager(self)
         self.splittab = SplitTabManager(self)
@@ -486,15 +491,23 @@ class PyPDFBuilderApplication:
 
     # boy oh boy if there's anyway to do these callsbacks more elegantly, please let me gain that knowledge!
     def select_tab_join(self, *args, **kwargs):
+        '''Gets called when menu item "View > Join Files" is selected.
+        Pops appropriate tab into view.'''
         self.notebook.select(self.tabs['join'])
 
     def select_tab_split(self, *args, **kwargs):
+        '''Gets called when menu item "View > Split File" is selected.
+        Pops appropriate tab into view.'''
         self.notebook.select(self.tabs['split'])
 
     def select_tab_bg(self, *args, **kwargs):
+        '''Gets called when menu item "View > Background/Stamp/Number" is selected.
+        Pops appropriate tab into view.'''
         self.notebook.select(self.tabs['bg'])
 
     def select_tab_rotate(self, *args, **kwargs):
+        '''Gets called when menu item "View > Rotate Pages" is selected.
+        Pops appropriate tab into view.'''
         self.notebook.select(self.tabs['rotate'])
 
     def jointab_add_file(self):
@@ -551,6 +564,21 @@ class PyPDFBuilderApplication:
 
     def rotatetab_save_as(self):
         self.rotatetab.save_as()
+
+    def show_settings(self, *args, **kwargs):
+        '''Shows the settings dialog. The close event is handled by `self.close_settings()`
+        and all the settings management is handled there. Args and kwargs are included in
+        method definition in case it is triggered by the keyboard shortcut, in which
+        case `event` gets passed into the call.'''
+        self.settings_dialog.run()
+        # load data from settings and update widgets in dialog accordingly
+
+    def close_settings(self, *args, **kwargs):
+        # save settings and close it up
+        self.settings_dialog.close()
+
+    def cancel_settings(self, *args, **kwargs):
+        pass
 
     def get_file_dialog(self, func, widget_title='Choose File(s) …'):
         f = func(

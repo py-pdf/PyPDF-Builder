@@ -1,13 +1,17 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
-  <object class="tk.Toplevel" id="mainwindow">
+  <object class="tk.Toplevel" id="MainWindow">
     <property name="geometry">500x400</property>
     <property name="height">400</property>
-    <property name="pady">0</property>
     <property name="resizable">none</property>
     <property name="takefocus">false</property>
     <property name="title" translatable="yes">PyPDF Builder</property>
     <property name="width">500</property>
+    <bind add="" handler="select_tab_bg" sequence="&lt;Control-b&gt;" />
+    <bind add="" handler="select_tab_join" sequence="&lt;Control-j&gt;" />
+    <bind add="" handler="select_tab_rotate" sequence="&lt;Control-r&gt;" />
+    <bind add="" handler="select_tab_split" sequence="&lt;Control-s&gt;" />
+    <bind add="" handler="show_settings" sequence="&lt;Control-t&gt;" />
     <child>
       <object class="ttk.Frame" id="MainApplication">
         <property name="height">400</property>
@@ -830,6 +834,18 @@
             <property name="accelerator">Strg+P</property>
             <property name="command_id_arg">false</property>
             <property name="label" translatable="yes">Show Document Protection</property>
+            <property name="state">disabled</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Separator" id="ViewSeparator_2" />
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="ViewAppSettings">
+            <property name="accelerator">Strg+T</property>
+            <property name="command">show_settings</property>
+            <property name="command_id_arg">false</property>
+            <property name="label" translatable="yes">Settings</property>
           </object>
         </child>
       </object>
@@ -837,6 +853,71 @@
     <child>
       <object class="tk.Menuitem.Submenu" id="HelpMenu">
         <property name="label" translatable="yes">Help</property>
+      </object>
+    </child>
+  </object>
+  <object class="pygubu.builder.widgets.dialog" id="SettingsDialog">
+    <property name="geometry">400x300</property>
+    <property name="height">100</property>
+    <property name="modal">true</property>
+    <property name="resizable">none</property>
+    <property name="takefocus">true</property>
+    <property name="title" translatable="yes">Settings</property>
+    <property name="width">200</property>
+    <bind add="" handler="close_settings" sequence="&lt;&lt;DialogClose&gt;&gt;" />
+    <child>
+      <object class="ttk.Frame" id="SettingsFrame_1">
+        <property name="height">200</property>
+        <property name="padding">10</property>
+        <property name="width">400</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <rows>
+            <row id="0">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+        </layout>
+        <child>
+          <object class="ttk.Labelframe" id="SystemToolsFrame_1">
+            <property name="height">100</property>
+            <property name="text" translatable="yes">System Tools</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <rows>
+                <row id="0">
+                  <property name="minsize">0</property>
+                  <property name="weight">0</property>
+                </row>
+              </rows>
+              <columns>
+                <column id="0">
+                  <property name="weight">1</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="ttk.Checkbutton" id="UsePopplerCheckbutton_1">
+                <property name="text" translatable="yes">Use Poppler PDF Tools if available</property>
+                <property name="variable">string:settings_use_poppler</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
   </object>
