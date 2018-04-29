@@ -6,3 +6,10 @@ PDF_FILEPATH = 2
 PDF_PAGES = 3
 
 ROTATE_DEGREES = {'LEFT': 270, 'RIGHT': 90, 'ONE_EIGHTY': 180}
+
+
+SPLIT_FILE_SUCCESS = 'Files saved successfully to {}!'
+JOIN_FILE_SUCCESS = 'Files joined successfully to {}!'
+ROTATE_FILE_SUCCESS = 'Pages in {} rotated successfully!'
+BG_FILE_SUCCESS = 'File saved successfully to {}!'
+DEFAULT_STATUS = 'PyPDF Builder v1.0'

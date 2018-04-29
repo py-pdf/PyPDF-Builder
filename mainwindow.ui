@@ -763,8 +763,8 @@
             </layout>
             <child>
               <object class="ttk.Label" id="StatusText">
-                <property name="text" translatable="yes">PyPDF v0.1</property>
-                <property name="textvariable">string:status_text</property>
+                <property name="text" translatable="yes">PyPDF v1.0</property>
+                <property name="textvariable">string:application_status_text</property>
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>

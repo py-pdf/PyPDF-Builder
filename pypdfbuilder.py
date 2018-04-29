@@ -102,12 +102,6 @@ class UserData:
         except FileNotFoundError:
             print('Something went horribly wrong while trying to save your current user data.')
 
-    def save_success(self):
-        '''Gets called when a PDF file was processed successfully. Currently only
-        increases the `number_of_processed_files´-counter by 1
-        '''
-        self.number_of_processed_files += 1
-
 
 class PDFInfo:
     '''File info class for PDF files.
@@ -238,7 +232,7 @@ class BgTabManager:
                     out_pdf.addPage(bottom_page)
                 with open(save_filepath, "wb") as out_pdf_stream:
                     out_pdf.write(out_pdf_stream)
-            self.parent.user_data.save_success()
+            self.parent.save_success(status_text=BG_FILE_SUCCESS.format(os.path.basename(save_filepath)))
 
 
 class SplitTabManager:
@@ -289,7 +283,7 @@ class SplitTabManager:
                 out_pdf.addPage(in_pdf.getPage(p))
                 with open(output_path, "wb") as out_pdf_stream:
                     out_pdf.write(out_pdf_stream)
-            self.parent.user_data.save_success()
+            self.parent.save_success(status_text=SPLIT_FILE_SUCCESS.format(os.path.dirname(self.__split_filepath)))
 
 
 class RotateTabManager:
@@ -345,7 +339,7 @@ class RotateTabManager:
                     out_pdf.addPage(in_pdf.getPage(p))
             with open(save_filepath, "wb") as out_pdf_stream:
                 out_pdf.write(out_pdf_stream)
-            self.parent.user_data.save_success()
+            self.parent.save_success(status_text=ROTATE_FILE_SUCCESS.format(os.path.basename(save_filepath)))
 
 
 class JoinTabManager:
@@ -432,7 +426,7 @@ class JoinTabManager:
                             merger.append(fileobj=open(f[PDF_FILEPATH], 'rb'), pages=page_range)
                 with open(save_filepath, 'wb') as out_pdf:
                     merger.write(out_pdf)
-                self.parent.user_data.save_success()
+                self.parent.save_success(status_text=JOIN_FILE_SUCCESS.format(os.path.basename(save_filepath)))
 
     def move_up(self):
         selected_files = self.__selected_files
@@ -462,6 +456,8 @@ class JoinTabManager:
 
 
 class PyPDFBuilderApplication:
+    '''Main application class. Handles setup and running of all application parts.'''
+
     def __init__(self):
         self.builder = pgBuilder()
         self.builder.add_from_file(os.path.join(CURRENT_DIR, 'mainwindow.ui'))
@@ -475,10 +471,10 @@ class PyPDFBuilderApplication:
             'bg': self.builder.get_object('BgFrame'),
             'rotate': self.builder.get_object('RotateFrame'),
         }
-
         self.mainmenu = self.builder.get_object('MainMenu')
         self.mainwindow.config(menu=self.mainmenu)
-
+        self.__status_text_variable = self.builder.get_variable('application_status_text')
+        self.status_text = None
         self.builder.connect_callbacks(self)
 
         self.user_data = UserData()
@@ -488,6 +484,14 @@ class PyPDFBuilderApplication:
         self.splittab = SplitTabManager(self)
         self.bgtab = BgTabManager(self)
         self.rotatetab = RotateTabManager(self)
+
+    @property
+    def status_text(self):
+        return self.__status_text_variable.get()
+
+    @status_text.setter
+    def status_text(self, val):
+        self.__status_text_variable.set(val)
 
     # boy oh boy if there's anyway to do these callsbacks more elegantly, please let me gain that knowledge!
     def select_tab_join(self, *args, **kwargs):
@@ -564,6 +568,13 @@ class PyPDFBuilderApplication:
 
     def rotatetab_save_as(self):
         self.rotatetab.save_as()
+
+    def save_success(self, status_text=DEFAULT_STATUS):
+        '''Gets called when a PDF file was processed successfully. Currently only
+        increases the `number_of_processed_files`-counter by 1
+        '''
+        self.user_data.number_of_processed_files += 1
+        self.status_text = status_text
 
     def show_settings(self, *args, **kwargs):
         '''Shows the settings dialog. The close event is handled by `self.close_settings()`
