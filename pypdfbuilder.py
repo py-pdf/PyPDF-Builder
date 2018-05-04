@@ -24,7 +24,58 @@ class SettingsData:
     '''Class for managing current user's application settings'''
 
     def __init__(self):
-        pass
+        self.__settings_data_path = os.path.join(CONFIG_DIR, 'data.json')
+        self.__settings_defaults = {
+            'use_poppler_tools': False,
+        }
+        self.__settings_data = self.__get_settings_data()
+
+    @property
+    def use_poppler_tools(self):
+        '''If set to True, PyPDF Builder will first try to use Poppler Tools where possible
+        to produce the desired PDFs.
+
+        The getter will first try to return the value stored in the
+        instance, then try to read it out of the user data file, and if all else fails,
+        set it to False and return that value.
+
+        The setter will set the according class instance property and save that property to
+        a settings data file. If no such file exists yet, one will be created.
+        '''
+        return self.__settings_data.get('use_poppler_tools', self.__get_settings_data()['use_poppler_tools'])
+
+    @use_poppler_tools.setter
+    def use_poppler_tools(self, val):
+        self.__settings_data['use_poppler_tools'] = val
+        self.__save_settings_data()
+
+    def __get_settings_data(self):
+        '''Method to retrieve current user's settings data
+
+        Return:
+            dict: Dictionary of settings data with keys:
+                * `use_poppler_tools`: user Poppler PDF tools by default
+        '''
+        try:
+            with (open(self.__settings_data_path, 'r')) as datafile:
+                settings_data = json.load(datafile)
+            # make sure all values are returned. If a key is non-existant, fill it with default value
+            for key, val in self.__settings_defaults.items():
+                if key not in settings_data:
+                    settings_data[key] = val
+        except FileNotFoundError:
+            settings_data = self.__settings_defaults
+        return settings_data
+
+    def __save_settings_data(self):
+        if not os.path.exists(os.path.dirname(self.__settings_data_path)):
+            plPath(os.path.dirname(self.__settings_data_path)).mkdir(parents=True, exist_ok=True)
+        try:
+            with (open(self.__settings_data_path, 'w')) as datafile:
+                json.dump(self.__settings_data, datafile)
+        except FileNotFoundError:
+            print('Something went horribly wrong while trying to save your current user data.')
+
 
 class UserData:
     '''Class for storing current user's application data'''
@@ -474,6 +525,7 @@ class PyPDFBuilderApplication:
         self.mainmenu = self.builder.get_object('MainMenu')
         self.mainwindow.config(menu=self.mainmenu)
         self.__status_text_variable = self.builder.get_variable('application_status_text')
+        self.__settings_use_poppler_variable = self.builder.get_variable('settings_use_poppler')
         self.status_text = None
         self.builder.connect_callbacks(self)
 
@@ -582,10 +634,10 @@ class PyPDFBuilderApplication:
         method definition in case it is triggered by the keyboard shortcut, in which
         case `event` gets passed into the call.'''
         self.settings_dialog.run()
-        # load data from settings and update widgets in dialog accordingly
+        self.__settings_use_poppler_variable.set(self.settings_data.use_poppler_tools)
 
     def close_settings(self, *args, **kwargs):
-        # save settings and close it up
+        self.settings_data.use_poppler_tools = self.__settings_use_poppler_variable.get()
         self.settings_dialog.close()
 
     def cancel_settings(self, *args, **kwargs):

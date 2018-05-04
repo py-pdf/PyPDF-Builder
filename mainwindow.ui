@@ -889,6 +889,7 @@
           <object class="ttk.Labelframe" id="SystemToolsFrame_1">
             <property name="height">100</property>
             <property name="text" translatable="yes">System Tools</property>
+            <property name="width">180</property>
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
@@ -908,7 +909,7 @@
             <child>
               <object class="ttk.Checkbutton" id="UsePopplerCheckbutton_1">
                 <property name="text" translatable="yes">Use Poppler PDF Tools if available</property>
-                <property name="variable">string:settings_use_poppler</property>
+                <property name="variable">boolean:settings_use_poppler</property>
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>

@@ -62,5 +62,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [X] Rotate Pages
 - [X] Menus
 - [X] Persistent User Settings
+- [ ] Logging
+- [ ] Error Reporting?
+- [ ] Github Project pages with Nikola
 - [ ] Package via pyInstaller
 - [ ] Distribution via Releases on GitHub
