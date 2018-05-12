@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import sys
 import appdirs
 import json
 from pathlib import Path as plPath
@@ -9,12 +10,18 @@ from settings import *
 
 from tkinter import filedialog
 from pygubu import Builder as pgBuilder
-from pygubu.builder import ttkstdwidgets
+
+# if dist fails to start because it's missing these, uncomment these two imports
+# import pygubu.builder.ttkstdwidgets
+# import pygubu.builder.widgets.dialog
 
 from PyPDF2 import PdfFileMerger, PdfFileReader, PdfFileWriter
 
-APPNAME = 'pypdfbuilder'
-CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+# check to see if we're running from stand-alone one-file executable:
+if hasattr(sys, '_MEIPASS'):
+    CURRENT_DIR = sys._MEIPASS
+else:
+    CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 USER_DIR = str(plPath.home())
 CONFIG_DIR = appdirs.user_config_dir(APPNAME)
 DATA_DIR = appdirs.user_data_dir(APPNAME)
@@ -185,7 +192,7 @@ class PDFInfo:
 
         '''
         basename = os.path.basename(self.__filepath)
-        concat_filename = f'{basename[0:35]}'
+        concat_filename = f'{basename[0:max_length]}'
         if len(basename) > max_length:
             concat_filename += '…'
         return concat_filename
@@ -513,17 +520,17 @@ class PyPDFBuilderApplication:
         self.builder = pgBuilder()
         self.builder.add_from_file(os.path.join(CURRENT_DIR, 'mainwindow.ui'))
 
-        self.mainwindow = self.builder.get_object('MainWindow')
-        self.settings_dialog = self.builder.get_object('SettingsDialog', self.mainwindow)
-        self.notebook = self.builder.get_object('AppNotebook')
-        self.tabs = {
+        self.__mainwindow = self.builder.get_object('MainWindow')
+        self.__settings_dialog = self.builder.get_object('SettingsDialog', self.__mainwindow)
+        self.__notebook = self.builder.get_object('AppNotebook')
+        self.__tabs = {
             'join': self.builder.get_object('JoinFrame'),
             'split': self.builder.get_object('SplitFrame'),
             'bg': self.builder.get_object('BgFrame'),
             'rotate': self.builder.get_object('RotateFrame'),
         }
-        self.mainmenu = self.builder.get_object('MainMenu')
-        self.mainwindow.config(menu=self.mainmenu)
+        self.__mainmenu = self.builder.get_object('MainMenu')
+        self.__mainwindow.config(menu=self.__mainmenu)
         self.__status_text_variable = self.builder.get_variable('application_status_text')
         self.__settings_use_poppler_variable = self.builder.get_variable('settings_use_poppler')
         self.status_text = None
@@ -532,10 +539,12 @@ class PyPDFBuilderApplication:
         self.user_data = UserData()
         self.settings_data = SettingsData()
 
-        self.jointab = JoinTabManager(self)
-        self.splittab = SplitTabManager(self)
-        self.bgtab = BgTabManager(self)
-        self.rotatetab = RotateTabManager(self)
+        self.__jointab = JoinTabManager(self)
+        self.__splittab = SplitTabManager(self)
+        self.__bgtab = BgTabManager(self)
+        self.__rotatetab = RotateTabManager(self)
+
+        self.status_text = DEFAULT_STATUS
 
     @property
     def status_text(self):
@@ -549,55 +558,55 @@ class PyPDFBuilderApplication:
     def select_tab_join(self, *args, **kwargs):
         '''Gets called when menu item "View > Join Files" is selected.
         Pops appropriate tab into view.'''
-        self.notebook.select(self.tabs['join'])
+        self.__notebook.select(self.__tabs['join'])
 
     def select_tab_split(self, *args, **kwargs):
         '''Gets called when menu item "View > Split File" is selected.
         Pops appropriate tab into view.'''
-        self.notebook.select(self.tabs['split'])
+        self.__notebook.select(self.__tabs['split'])
 
     def select_tab_bg(self, *args, **kwargs):
         '''Gets called when menu item "View > Background/Stamp/Number" is selected.
         Pops appropriate tab into view.'''
-        self.notebook.select(self.tabs['bg'])
+        self.__notebook.select(self.__tabs['bg'])
 
     def select_tab_rotate(self, *args, **kwargs):
         '''Gets called when menu item "View > Rotate Pages" is selected.
         Pops appropriate tab into view.'''
-        self.notebook.select(self.tabs['rotate'])
+        self.__notebook.select(self.__tabs['rotate'])
 
     def jointab_add_file(self):
-        self.jointab.add_file()
+        self.__jointab.add_file()
 
     def jointab_on_file_select(self, event):
-        self.jointab.on_file_select(event)
+        self.__jointab.on_file_select(event)
 
     def jointab_enter_page_selection(self, event):
-        self.jointab.enter_page_selection(event)
+        self.__jointab.enter_page_selection(event)
 
     def jointab_save_as(self):
-        self.jointab.save_as()
+        self.__jointab.save_as()
 
     def jointab_move_up(self):
-        self.jointab.move_up()
+        self.__jointab.move_up()
 
     def jointab_move_down(self):
-        self.jointab.move_down()
+        self.__jointab.move_down()
 
     def jointab_remove(self):
-        self.jointab.remove_file()
+        self.__jointab.remove_file()
 
     def splittab_open_file(self):
-        self.splittab.open_file()
+        self.__splittab.open_file()
 
     def splittab_save_as(self):
-        self.splittab.save_as()
+        self.__splittab.save_as()
 
     def bgtab_choose_bg_option(self):
-        self.bgtab.choose_bg_option()
+        self.__bgtab.choose_bg_option()
 
     def bgtab_choose_stamp_option(self):
-        self.bgtab.choose_stamp_option()
+        self.__bgtab.choose_stamp_option()
 
     def bgtab_choose_number_option(self):
         '''
@@ -607,19 +616,19 @@ class PyPDFBuilderApplication:
         pass
 
     def bgtab_choose_source_file(self):
-        self.bgtab.choose_source_file()
+        self.__bgtab.choose_source_file()
 
     def bgtab_choose_bg_file(self):
-        self.bgtab.choose_bg_file()
+        self.__bgtab.choose_bg_file()
 
     def bgtab_save_as(self):
-        self.bgtab.save_as()
+        self.__bgtab.save_as()
 
     def rotatetab_open_file(self):
-        self.rotatetab.open_file()
+        self.__rotatetab.open_file()
 
     def rotatetab_save_as(self):
-        self.rotatetab.save_as()
+        self.__rotatetab.save_as()
 
     def save_success(self, status_text=DEFAULT_STATUS):
         '''Gets called when a PDF file was processed successfully. Currently only
@@ -633,12 +642,12 @@ class PyPDFBuilderApplication:
         and all the settings management is handled there. Args and kwargs are included in
         method definition in case it is triggered by the keyboard shortcut, in which
         case `event` gets passed into the call.'''
-        self.settings_dialog.run()
+        self.__settings_dialog.run()
         self.__settings_use_poppler_variable.set(self.settings_data.use_poppler_tools)
 
     def close_settings(self, *args, **kwargs):
         self.settings_data.use_poppler_tools = self.__settings_use_poppler_variable.get()
-        self.settings_dialog.close()
+        self.__settings_dialog.close()
 
     def cancel_settings(self, *args, **kwargs):
         pass
@@ -657,10 +666,10 @@ class PyPDFBuilderApplication:
             return f
 
     def quit(self, event=None):
-        self.mainwindow.quit()
+        self.__mainwindow.quit()
 
     def run(self):
-        self.mainwindow.mainloop()
+        self.__mainwindow.mainloop()
 
 
 if __name__ == '__main__':

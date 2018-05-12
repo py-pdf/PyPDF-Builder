@@ -1,8 +1,8 @@
 # PyPDF Builder
 
-A cross-platform clone of [PDFTK Builder](http://angusj.com/pdftkb/) written in Python. Yes, Python!
+A cross-platform utility to join, split, stamp, and rotate PDFs written in Python. Yes, Python!
 
-The project's goal is a simple, end-user friendly GUI for the [PyPDF2](https://github.com/mstamy2/PyPDF2) package that can join, split, stamp/number, and rotate PDFs.
+This project is inspired by Angus Johnson's [PDFTK Builder](http://angusj.com/pdftkb/). Its goal is a GUI that builds on [PyPDF2](https://github.com/mstamy2/PyPDF2) as well as other PDF related libraries and offers a unified and simple experience for end-users.
 
 ![](screenshot.png)
 
@@ -12,10 +12,10 @@ Grab a copy of `virtualenv` or `virtualenvwrapper` and set up a virtual environm
 
 ```
 git clone https://github.com/mrgnth/PyPDF-Builder.git
-pip install -r requirements
+pip install -r requirements.txt
 ```
 
-These instructions will get you a copy of the project up and running on your local machine for development ~~and testing~~ purposes. ~~See deployment for notes on how to deploy the project on a live system.~~
+These instructions will get you a copy of the project up and running on your local machine for development purposes.
 
 ### Prerequisites
 
@@ -35,7 +35,16 @@ Python 3.6 was used in development… I haven't checked for compatibility with l
 
 ## Deployment
 
-Distributable application for Windows, Linux and Mac OS using pyInstaller or similiar tool. This isn't all too clear yet.
+Distributable application for Windows, Linux and Mac OS using [PyInstaller](https://pyinstaller.readthedocs.io/en/stable/):
+
+```
+pyinstaller --onefile --clean --windowed --add-data="mainwindow.ui:." \
+    --hidden-import="pygubu.builder.ttkstdwidgets" \
+    --hidden-import="pygubu.builder.widgets.dialog" \
+    pypdfbuilder.py
+```
+
+Subsequent builds can be managed by editing the `.spec` file created by the first build and then simply running `pyinstaller pypdfbuilder.spec` to build the executable.
 
 Long term: Inclusion in Debian repos for direct installation on end-user systems.
 
@@ -46,6 +55,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 * [Matthew Stamy](https://github.com/mstamy2): Creator and current maintainer of the PyPDF2 Python package
+* Angus Johnson: Creator of [PDFTK Builder](http://angusj.com/pdftkb/)
 
 ## To Do
 

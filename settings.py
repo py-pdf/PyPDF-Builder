@@ -1,3 +1,6 @@
+APPNAME = 'pypdfbuilder'
+APPVERSION = '0.9'
+
 # Constants for indexing into the values stored in the TreeView (e.g. in the Join View)
 
 PDF_FILENAME = 0
@@ -12,4 +15,4 @@ SPLIT_FILE_SUCCESS = 'Files saved successfully to {}!'
 JOIN_FILE_SUCCESS = 'Files joined successfully to {}!'
 ROTATE_FILE_SUCCESS = 'Pages in {} rotated successfully!'
 BG_FILE_SUCCESS = 'File saved successfully to {}!'
-DEFAULT_STATUS = 'PyPDF Builder v1.0'
+DEFAULT_STATUS = F'PyPDF Builder v{APPVERSION}'

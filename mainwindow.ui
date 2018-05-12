@@ -723,7 +723,7 @@
                         <child>
                           <object class="ttk.Button" id="RotateSaveButton">
                             <property name="command">rotatetab_save_as</property>
-                            <property name="text" translatable="yes">Save As…</property>
+                            <property name="text" translatable="yes">Save As …</property>
                             <layout>
                               <property name="column">0</property>
                               <property name="padx">10</property>
@@ -763,7 +763,6 @@
             </layout>
             <child>
               <object class="ttk.Label" id="StatusText">
-                <property name="text" translatable="yes">PyPDF v1.0</property>
                 <property name="textvariable">string:application_status_text</property>
                 <layout>
                   <property name="column">0</property>
@@ -908,6 +907,7 @@
             </layout>
             <child>
               <object class="ttk.Checkbutton" id="UsePopplerCheckbutton_1">
+                <property name="state">disabled</property>
                 <property name="text" translatable="yes">Use Poppler PDF Tools if available</property>
                 <property name="variable">boolean:settings_use_poppler</property>
                 <layout>
