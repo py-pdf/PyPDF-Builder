@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
   <object class="tk.Toplevel" id="MainWindow">
-    <property name="geometry">500x400</property>
     <property name="height">400</property>
     <property name="resizable">none</property>
     <property name="takefocus">false</property>
@@ -545,7 +544,7 @@
             </child>
             <child>
               <object class="ttk.Notebook.Tab" id="TabRotate">
-                <property name="text" translatable="yes">Rotate Pages</property>
+                <property name="text" translatable="yes">Rotate / Extract Pages</property>
                 <child>
                   <object class="ttk.Frame" id="RotateFrame">
                     <property name="height">200</property>
@@ -668,12 +667,26 @@
                             </layout>
                             <child>
                               <object class="ttk.Radiobutton" id="RotateLeftButton">
+                                <property name="text" translatable="yes">No Rotate</property>
+                                <property name="value">NO_ROTATE</property>
+                                <property name="variable">string:rotate_amount</property>
+                                <property name="width">8</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="padx">10</property>
+                                  <property name="propagate">True</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ttk.Radiobutton" id="RotateLeftButton">
                                 <property name="text" translatable="yes">Left 90°</property>
                                 <property name="value">LEFT</property>
                                 <property name="variable">string:rotate_amount</property>
                                 <property name="width">8</property>
                                 <layout>
-                                  <property name="column">0</property>
+                                  <property name="column">1</property>
                                   <property name="padx">10</property>
                                   <property name="propagate">True</property>
                                   <property name="row">0</property>
@@ -687,7 +700,7 @@
                                 <property name="variable">string:rotate_amount</property>
                                 <property name="width">8</property>
                                 <layout>
-                                  <property name="column">1</property>
+                                  <property name="column">2</property>
                                   <property name="padx">10</property>
                                   <property name="propagate">True</property>
                                   <property name="row">0</property>
@@ -701,7 +714,7 @@
                                 <property name="variable">string:rotate_amount</property>
                                 <property name="width">8</property>
                                 <layout>
-                                  <property name="column">2</property>
+                                  <property name="column">3</property>
                                   <property name="padx">10</property>
                                   <property name="propagate">True</property>
                                   <property name="row">0</property>
@@ -744,6 +757,19 @@
                             </layout>
                           </object>
                         </child>
+
+                        <child>
+                          <object class="ttk.Checkbutton" id="DoExtractCheckButton">
+                          <property name="text" translatable="yes">Extract pages</property>
+                          <property name="variable">boolean:do_extract_pages</property>
+                          <layout>
+                            <property name="column">2</property>
+                            <property name="propagate">True</property>
+                            <property name="row">0</property>
+                          </layout>
+                        </object>
+                        </child>
+
                       </object>
                     </child>
                   </object>

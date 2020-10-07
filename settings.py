@@ -1,5 +1,5 @@
 APPNAME = 'pypdfbuilder'
-APPVERSION = '0.9'
+APPVERSION = '0.9.0_fork_YXVjc29u'
 
 # Constants for indexing into the values stored in the TreeView (e.g. in the Join View)
 
@@ -8,7 +8,7 @@ PDF_PAGESELECT = 1
 PDF_FILEPATH = 2
 PDF_PAGES = 3
 
-ROTATE_DEGREES = {'LEFT': 270, 'RIGHT': 90, 'ONE_EIGHTY': 180}
+ROTATE_DEGREES = {'LEFT': 270, 'RIGHT': 90, 'ONE_EIGHTY': 180, 'NO_ROTATE': 0}
 
 
 SPLIT_FILE_SUCCESS = 'Files saved successfully to {}!'

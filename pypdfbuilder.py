@@ -353,11 +353,13 @@ class RotateTabManager:
         self.__rotate_from_page_widget = self.parent.builder.get_variable('rotate_from_page')
         self.__rotate_to_page_widget = self.parent.builder.get_variable('rotate_to_page')
         self.__rotate_amount_widget = self.parent.builder.get_variable('rotate_amount')
+        self.__do_page_extract_widget = self.parent.builder.get_variable('do_extract_pages')
         # Set default values. No idea how to avoid this using only the UI file, so I'm
         # breaking the MVC principle here.
-        self.__rotate_amount_widget.set(None)
+        self.__rotate_amount_widget.set('NO_ROTATE')
         self.__rotate_from_page_widget.set('')
         self.__rotate_to_page_widget.set('')
+        self.__do_page_extract_widget.set(True)
 
     @property
     def parent(self):
@@ -391,9 +393,12 @@ class RotateTabManager:
             out_pdf = PdfFileWriter()
             for p in range(self.__rotate_file_info.pages):
                 if p in range(*page_range):
-                    out_pdf.addPage(in_pdf.getPage(p).rotateClockwise(
-                        ROTATE_DEGREES[self.__rotate_amount_widget.get()]))
-                else:
+                    if ROTATE_DEGREES[self.__rotate_amount_widget.get()] != 0:            
+                        out_pdf.addPage(in_pdf.getPage(p).rotateClockwise(
+                            ROTATE_DEGREES[self.__rotate_amount_widget.get()]))
+                    else:
+                        out_pdf.addPage(in_pdf.getPage(p))
+                elif not self.__do_page_extract_widget.get():
                     out_pdf.addPage(in_pdf.getPage(p))
             with open(save_filepath, "wb") as out_pdf_stream:
                 out_pdf.write(out_pdf_stream)
