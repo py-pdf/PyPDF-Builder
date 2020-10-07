@@ -4,6 +4,10 @@ A cross-platform utility to join, split, stamp, and rotate PDFs written in Pytho
 
 This project is inspired by Angus Johnson's [PDFTK Builder](http://angusj.com/pdftkb/). Its goal is a GUI that builds on [PyPDF2](https://github.com/mstamy2/PyPDF2) as well as other PDF related libraries and offers a unified and simple experience for end-users.
 
+This fork added the page extraction module and fixed minor ui issues (and is only tested) on Mac OS.
+
+![](screenshot_fork.png)
+
 ![](screenshot.png)
 
 
