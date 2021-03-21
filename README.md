@@ -42,7 +42,7 @@ Python 3.6 was used in development… I haven't checked for compatibility with l
 Distributable application for Windows, Linux and Mac OS using [PyInstaller](https://pyinstaller.readthedocs.io/en/stable/):
 
 ```
-pyinstaller --onefile --clean --windowed --add-data="mainwindow.ui:." \
+pyinstaller --onefile --clean --windowed --add-data="mainwindow.ui;." \
     --hidden-import="pygubu.builder.ttkstdwidgets" \
     --hidden-import="pygubu.builder.widgets.dialog" \
     pypdfbuilder.py
