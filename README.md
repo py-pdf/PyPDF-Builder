@@ -41,13 +41,21 @@ Python 3.6 was used in development… I haven't checked for compatibility with l
 
 Distributable application for Windows, Linux and Mac OS using [PyInstaller](https://pyinstaller.readthedocs.io/en/stable/):
 
+**Linux and Mac OS**
+```
+pyinstaller --onefile --clean --windowed --add-data="mainwindow.ui:." \
+    --hidden-import="pygubu.builder.ttkstdwidgets" \
+    --hidden-import="pygubu.builder.widgets.dialog" \
+    pypdfbuilder.py
+```
+
+**Windows**
 ```
 pyinstaller --onefile --clean --windowed --add-data="mainwindow.ui;." \
     --hidden-import="pygubu.builder.ttkstdwidgets" \
     --hidden-import="pygubu.builder.widgets.dialog" \
     pypdfbuilder.py
 ```
-
 Subsequent builds can be managed by editing the `.spec` file created by the first build and then simply running `pyinstaller pypdfbuilder.spec` to build the executable.
 
 Long term: Inclusion in Debian repos for direct installation on end-user systems.
