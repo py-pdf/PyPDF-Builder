@@ -16,7 +16,7 @@ Pygments==2.7.4
 pygubu==0.9.8.2
 PyInstaller==4.2
 pyparsing==2.2.0
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 pytz==2018.4
 requests==2.20.0
 six==1.11.0
