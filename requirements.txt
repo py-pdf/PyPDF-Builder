@@ -4,7 +4,7 @@ appdirs==1.4.3
 Babel==2.9.1
 chardet==3.0.4
 docutils==0.14
-future==0.16.0
+future==0.18.3
 idna==2.6
 imagesize==1.0.0
 Jinja2==2.11.3
